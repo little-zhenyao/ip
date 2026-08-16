@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * The main class for the Windy chatbot application.
  */
@@ -18,6 +20,21 @@ public class Windy {
         printSeparator();
     }
 
+    /**
+     * Repeat the words that user inputs until user inputs the word "bye"
+     */
+    private static void echo() {
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        while (!input.equals("bye")) {
+            printSeparator();
+            System.out.println(input);
+            printSeparator();
+            input = scanner.nextLine();
+        }
+        printSeparator();
+    }
+
     private static void printWindyBanner() {
         String banner = "__        ___           _       \n"
                 + "\\ \\      / (_)_ __   __| |_   _ \n"
@@ -33,6 +50,7 @@ public class Windy {
 
     public static void main(String[] args) {
         greet();
+        echo();
         sayBye();
     }
 }
