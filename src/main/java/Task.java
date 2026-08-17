@@ -4,6 +4,7 @@
 public class Task {
     private final String name;
     private boolean isDone;
+
     public Task(String name, boolean done) {
         this.name = name;
         this.isDone = done;
