@@ -7,11 +7,11 @@ public class Windy {
 
     private static final String NAME = "Windy";
     private static final int MAX_TASKS = 100;
-    private final String[] tasks;
+    private final Task[] tasks;
     private int sizeOfTasks;
 
     private Windy() {
-        tasks = new String[MAX_TASKS];
+        tasks = new Task[MAX_TASKS];
         sizeOfTasks = 0;
     }
 
@@ -36,29 +36,48 @@ public class Windy {
      */
     private void runCommandLoop() {
         Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
+        String input = scanner.nextLine().trim();
         while (!input.equals("bye")) {
+            String[] command = input.split("\\s+");
             printSeparator();
             if (input.equals("list")) {
                 this.listTasks();
+            } else if (command.length == 2 && command[0].equals("mark") || command[0].equals("unmark")) {
+                boolean mark = command[0].equals("mark");
+                this.markTask(command[1], mark);
             } else {
                 this.addTask(input);
             }
             printSeparator();
-            input = scanner.nextLine();
+            input = scanner.nextLine().trim();
         }
         printSeparator();
     }
 
+    private void markTask(String taskNumber, boolean mark) {
+        int num = Integer.parseInt(taskNumber) - 1;
+        if (num < 0 || num >= sizeOfTasks) {
+            System.out.println("Invalid task number");
+        }
+        tasks[num].setDone(mark);
+        if (mark) {
+            System.out.println("     Nice! I've marked this task as done:");
+        } else {
+            System.out.println("     OK, I've marked this task as not done yet:");
+        }
+        System.out.println("       [" + tasks[num].getStatus() + "] " + tasks[num].getName());
+    }
+
     private void addTask(String input) {
         System.out.println("     add: " + input);
-        this.tasks[sizeOfTasks] = input;
+        this.tasks[sizeOfTasks] = new Task(input, false);
         sizeOfTasks++;
     }
 
     private void listTasks() {
+        System.out.println("     Here are the tasks in your list:");
         for (int i = 0; i < sizeOfTasks; i++) {
-            System.out.println("     " + (i + 1) + ". " + tasks[i]);
+            System.out.println("     " + (i + 1) + ".[" + tasks[i].getStatus() + "] " + tasks[i].getName());
         }
     }
 
