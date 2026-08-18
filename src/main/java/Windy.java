@@ -37,29 +37,49 @@ public class Windy {
      */
     private void runCommandLoop() {
         Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine().trim();
-        while (!input.equals("bye")) {
+        while (scanner.hasNextLine()) {
+            String input = scanner.nextLine().trim();
+            if (input.equals("bye")) {
+                break;
+            }
+
             String[] command = input.split("\\s+");
             printSeparator();
-            if (input.equals("list")) {
-                this.listTasks();
-            } else if (command.length == 2 && (command[0].equals("mark") || command[0].equals("unmark"))) {
-                boolean mark = command[0].equals("mark");
-                this.markTask(command[1], mark);
-            } else {
-                this.addTask(input);
+            try {
+                if (input.equals("list")) {
+                    this.listTasks();
+                } else if (command[0].equals("mark") || command[0].equals("unmark")) {
+                    boolean mark = command[0].equals("mark");
+                    if (command.length != 2) {
+                        throw new InvalidInputFormatException("     Invalid format. Please use: mark TASK_NUMBER");
+                    }
+                    this.markTask(command[1], mark);
+                } else {
+                    this.addTask(input);
+                }
+            } catch (InvalidInputFormatException e) {
+                System.out.println(e.getMessage());
             }
+
             printSeparator();
-            input = scanner.nextLine().trim();
         }
         printSeparator();
     }
 
-    private void markTask(String taskNumber, boolean mark) {
-        int num = Integer.parseInt(taskNumber) - 1;
+    private void markTask(String taskNumber, boolean mark) throws InvalidInputFormatException {
+        int num;
+        try {
+            num = Integer.parseInt(taskNumber) - 1;
+        } catch (NumberFormatException e) {
+            throw new InvalidInputFormatException("     The number must be a positive integer");
+        }
         if (num < 0 || num >= sizeOfTasks) {
-            System.out.println("Invalid task number");
-            return;
+            if (sizeOfTasks == 0) {
+                throw new InvalidInputFormatException("     There are no tasks in the list.");
+            } else {
+                throw new InvalidInputFormatException("     Invalid number of task, " +
+                        "please try the number between 1 and " + sizeOfTasks);
+            }
         }
         tasks[num].setDone(mark);
         if (mark) {
@@ -70,27 +90,47 @@ public class Windy {
         System.out.println("       " + tasks[num].toString());
     }
 
-    private void addTask(String input) {
+    private void addTask(String input) throws InvalidInputFormatException {
         String[] command = input.split("\\s+");
+        if (command.length == 1 && !command[0].equals("todo") &&
+                !command[0].equals("deadline") && !command[0].equals("event")) {
+            throw new InvalidInputFormatException("     Invalid command, please try another one");
+        }
+        if (command.length == 1) {
+            throw new InvalidInputFormatException("     The description of task cannot be empty");
+        }
+        if (sizeOfTasks >=  MAX_TASKS) {
+            throw new InvalidInputFormatException("     The task list is full");
+        }
         String details = input.substring(command[0].length() + 1).trim();
         switch (command[0]) {
-            case "todo" -> this.tasks[sizeOfTasks] = new Todo(details, false);
+            case "todo" -> {
+                this.tasks[sizeOfTasks] = new Todo(details, false);
+            }
             case "deadline" -> {
                 String[] parts = details.split("\\s+/by\\s+", 2);
+                if (parts.length != 2) {
+                    throw new InvalidInputFormatException("     The format of deadline is wrong. Please use description /by date");
+                }
                 this.tasks[sizeOfTasks] = new Deadline(parts[0], false, parts[1]);
             }
             case "event" -> {
                 String[] fromParts = details.split("\\s+/from\\s+", 2);
+                if (fromParts.length != 2) {
+                    throw new InvalidInputFormatException("     The format of event is wrong. Please use description /from date1 /to date2");
+                }
                 String name = fromParts[0].trim();
 
                 String[] timeParts = fromParts[1].split("\\s+/to\\s+", 2);
+                if (timeParts.length != 2) {
+                    throw new InvalidInputFormatException("The format of event is wrong. Please use description /from date1 /to date2");
+                }
                 String from = timeParts[0].trim();
                 String to = timeParts[1].trim();
                 this.tasks[sizeOfTasks] = new Event(name, false, from, to);
             }
             default -> {
-                System.out.println("Invalid command");
-                return;
+                throw new InvalidInputFormatException("     Invalid command, please try another one");
             }
         }
         sizeOfTasks++;
