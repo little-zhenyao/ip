@@ -10,9 +10,18 @@ public class Deadline extends Task{
         this.deadline = deadline;
     }
 
+    public String getDeadline() {
+        return deadline;
+    }
+
     @Override
     public String toString() {
         return "[D][" + this.getStatus() + "] " + this.getName()
                 + " (by: " + this.deadline + ")";
+    }
+
+    @Override
+    public String toDataString() {
+        return "D | " + (this.isDone() ? "1" : "0") + " | " + this.getName() + " | " + this.deadline;
     }
 }
