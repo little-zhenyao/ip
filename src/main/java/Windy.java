@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,9 +10,26 @@ public class Windy {
 
     private static final String NAME = "Windy";
     private final List<Task> tasks;
+    private final Storage storage;
 
     private Windy() {
-        tasks = new ArrayList<>();
+        List<Task> tasks1;
+        storage = new Storage("data/windy.txt");
+        try {
+            tasks1 = storage.loadTasks();
+        } catch (IOException e) {
+            System.out.println("     Unable to load saved tasks: " + e.getMessage());
+            tasks1 = new ArrayList<>();
+        }
+        tasks = tasks1;
+    }
+
+    private void saveTasks() {
+        try {
+            storage.saveTasks(tasks);
+        } catch (IOException e) {
+            System.out.println("     Unable to save tasks: " + e.getMessage());
+        }
     }
 
     private void greet() {
@@ -108,6 +126,7 @@ public class Windy {
         System.out.println("     Noted. I've removed this task:");
         System.out.println("       " + tasks.get(num));
         tasks.remove(num);
+        saveTasks();
         System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
     }
 
@@ -119,6 +138,7 @@ public class Windy {
         } else {
             System.out.println("     OK, I've marked this task as not done yet:");
         }
+        saveTasks();
         System.out.println("       " + tasks.get(num));
     }
 
@@ -158,6 +178,7 @@ public class Windy {
                 throw new InvalidInputFormatException("     Invalid command, please try another one");
             }
         }
+        saveTasks();
         System.out.println("     Got it. I've added this task:");
         System.out.println("       " + tasks.get(tasks.size() - 1));
         System.out.println("     Now you have " + tasks.size() + " tasks in the list.");

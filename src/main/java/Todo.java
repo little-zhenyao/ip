@@ -11,4 +11,9 @@ public class Todo extends Task {
     public String toString() {
         return "[T][" + this.getStatus() + "] " + this.getName();
     }
+
+    @Override
+    public String toDataString() {
+        return "T | " + (this.isDone() ? "1" : "0") + " | " + this.getName();
+    }
 }

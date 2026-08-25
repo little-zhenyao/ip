@@ -23,3 +23,9 @@ text-ui-test/EXPECTED-UNIX.TXT
 
 # AI skill
 /.agents
+
+# Data
+/data
+
+# Test
+/test

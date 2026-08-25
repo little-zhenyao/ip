@@ -13,6 +13,9 @@ public abstract class Task {
     public String getStatus() {
         return isDone ? "X" : " ";
     }
+    public boolean isDone() {
+        return isDone;
+    }
 
     public String getName() {
         return name;
@@ -21,4 +24,10 @@ public abstract class Task {
     public void setDone(boolean done) {
         isDone = done;
     }
+
+    /**
+     * Method to convert data to the format to storage
+     * @return the data of tasks that should be saved in the file
+     */
+    public abstract String toDataString();
 }
