@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 /**
  * Represents a task with a name and a completion status.
  */
@@ -30,4 +32,6 @@ public abstract class Task {
      * @return the data of tasks that should be saved in the file
      */
     public abstract String toDataString();
+
+    public abstract boolean isOccur(LocalDate date);
 }

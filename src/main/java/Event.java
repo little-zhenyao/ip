@@ -1,32 +1,47 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.util.Locale;
+
 /**
  * Represents a task that occurs between a start and an end date or time.
  */
 public class Event extends Task{
 
-    private final String start;
-    private final String end;
+    private final LocalDate start;
+    private final LocalDate end;
+    private static final DateTimeFormatter INPUT_FORMATTER
+            = DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter OUTPUT_FORMATTER =
+            DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH);
 
-    public Event(String name, boolean done, String start, String end) {
+    public Event(String name, boolean done, String start, String end)  throws InvalidInputFormatException {
         super(name, done);
-        this.start = start;
-        this.end = end;
-    }
+        try {
+            this.start = LocalDate.parse(start, INPUT_FORMATTER);
+            this.end = LocalDate.parse(end, INPUT_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new InvalidInputFormatException
+                    ("     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
+        }
 
-    public String getStart() {
-        return start;
-    }
-    public String getEnd() {
-        return end;
     }
 
     @Override
     public String toString() {
         return "[E][" + this.getStatus() + "] " + this.getName()
-                + " (from: " + this.start + " to: " + this.end + ")";
+                + " (from: " + this.start.format(OUTPUT_FORMATTER)
+                + " to: " + this.end.format(OUTPUT_FORMATTER) + ")";
     }
 
     @Override
     public String toDataString() {
         return "E | " + (this.isDone() ? "1" : "0") + " | " + this.getName() + " | " + this.start + " | " + this.end;
+    }
+
+    @Override
+    public boolean isOccur(LocalDate date) {
+        return !date.isBefore(this.start) && !date.isAfter(this.end) && !isDone();
     }
 }
