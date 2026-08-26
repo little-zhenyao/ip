@@ -1,3 +1,5 @@
+package windy.exception;
+
 /**
  * Represents the error that user's input format is wrong
  */
