@@ -1,3 +1,5 @@
+package windy.command;
+
 import java.util.Locale;
 
 /**

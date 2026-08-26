@@ -1,3 +1,6 @@
+package windy.task;
+
+import windy.exception.InvalidInputFormatException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -7,7 +10,7 @@ import java.util.Locale;
 /**
  * Represents a task that must be completed by a specific date or time.
  */
-public class Deadline extends Task{
+public class Deadline extends Task {
 
     private final LocalDate deadline;
     private static final DateTimeFormatter INPUT_FORMATTER

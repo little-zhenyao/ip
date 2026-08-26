@@ -1,3 +1,13 @@
+package windy;
+
+import windy.command.CommandType;
+import windy.command.Parser;
+import windy.exception.InvalidInputFormatException;
+import windy.storage.Storage;
+import windy.task.Task;
+import windy.task.TaskList;
+import windy.ui.Ui;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
