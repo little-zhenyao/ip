@@ -48,7 +48,7 @@ public class Storage {
                 case "E" -> new Event(name, isDone, parts[3], parts[4]);
                 default -> throw new IOException("Unknown task type: " + type);
             };
-        }catch (ArrayIndexOutOfBoundsException e) {
+        }catch (ArrayIndexOutOfBoundsException | InvalidInputFormatException e) {
             throw new IOException("Invalid task line: " + line, e);
         }
     }

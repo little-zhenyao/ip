@@ -1,7 +1,11 @@
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.time.LocalDate;
 
 /**
  * The main class for the Windy chatbot application.
@@ -63,42 +67,68 @@ public class Windy {
             printSeparator();
             try {
                 switch (commandType) {
-                case BYE -> {
-                    if (command.length == 1) {
-                        break commandLoop;
-                    }
-                    throw new InvalidInputFormatException("     Invalid command, please try another one");
-                }
-                case LIST -> {
-                    if (command.length != 1) {
+                    case BYE -> {
+                        if (command.length == 1) {
+                            break commandLoop;
+                        }
                         throw new InvalidInputFormatException("     Invalid command, please try another one");
                     }
-                    this.listTasks();
-                }
-                case MARK, UNMARK -> {
-                    if (command.length != 2) {
-                        throw new InvalidInputFormatException("     Invalid format. Please use: mark TASK_NUMBER");
+                    case LIST -> {
+                        if (command.length != 1) {
+                            throw new InvalidInputFormatException("     Invalid command, please try another one");
+                        }
+                        this.listTasks();
                     }
-                    this.markTask(command[1], commandType == CommandType.MARK);
-                }
-                case DELETE -> {
-                    if (command.length != 2) {
-                        throw new InvalidInputFormatException("     Invalid format. Please use: delete TASK_NUMBER");
+                    case MARK, UNMARK -> {
+                        if (command.length != 2) {
+                            throw new InvalidInputFormatException("     Invalid format. Please use: mark TASK_NUMBER");
+                        }
+                        this.markTask(command[1], commandType == CommandType.MARK);
                     }
-                    this.deleteTask(command[1]);
-                }
-                case TODO, DEADLINE, EVENT -> {
-                    this.addTask(input, commandType);
-                }
-                case UNKNOWN -> {
-                    throw new InvalidInputFormatException("     Invalid command, please try another one");
-                }
+                    case DELETE -> {
+                        if (command.length != 2) {
+                            throw new InvalidInputFormatException("     Invalid format. Please use: delete TASK_NUMBER");
+                        }
+                        this.deleteTask(command[1]);
+                    }
+                    case TODO, DEADLINE, EVENT -> {
+                        this.addTask(input, commandType);
+                    }
+                    case FIND -> {
+                        if (command.length != 2) {
+                            throw new InvalidInputFormatException("     Invalid format. Please use: find yyyy-M-d");
+                        }
+                        this.findTaskOnDate(command[1]);
+                    }
+                    case UNKNOWN -> {
+                        throw new InvalidInputFormatException("     Invalid command, please try another one");
+                    }
                 }
             } catch (InvalidInputFormatException e) {
                 System.out.println(e.getMessage());
             }
 
             printSeparator();
+        }
+    }
+
+    private void findTaskOnDate(String date) throws InvalidInputFormatException {
+        LocalDate localDate;
+        try {
+            localDate = LocalDate.parse(date
+                    , DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT));
+        } catch (DateTimeParseException e) {
+            throw new InvalidInputFormatException("     Invalid date format. Please write like find yyyy-M-d");
+        }
+        boolean isTaskFound = false;
+        for (Task task : this.tasks) {
+           if (task.isOccur(localDate)) {
+               System.out.println("     " + task);
+               isTaskFound = true;
+           }
+        }
+        if (!isTaskFound) {
+            System.out.println("     No such task found");
         }
     }
 
@@ -155,20 +185,23 @@ public class Windy {
             case DEADLINE -> {
                 String[] parts = details.split("\\s+/by\\s+", 2);
                 if (parts.length != 2) {
-                    throw new InvalidInputFormatException("     The format of deadline is wrong. Please use description /by date");
+                    throw new InvalidInputFormatException
+                            ("     The format of deadline is wrong. Please use description /by yyyy-M-d");
                 }
                 this.tasks.add(new Deadline(parts[0], false, parts[1]));
             }
             case EVENT -> {
                 String[] fromParts = details.split("\\s+/from\\s+", 2);
                 if (fromParts.length != 2) {
-                    throw new InvalidInputFormatException("     The format of event is wrong. Please use description /from date1 /to date2");
+                    throw new InvalidInputFormatException
+                            ("     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
                 }
                 String name = fromParts[0].trim();
 
                 String[] timeParts = fromParts[1].split("\\s+/to\\s+", 2);
                 if (timeParts.length != 2) {
-                    throw new InvalidInputFormatException("The format of event is wrong. Please use description /from date1 /to date2");
+                    throw new InvalidInputFormatException
+                            ("     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
                 }
                 String from = timeParts[0].trim();
                 String to = timeParts[1].trim();
