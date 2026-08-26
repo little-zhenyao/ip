@@ -1,10 +1,6 @@
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.time.LocalDate;
 
 /**
@@ -13,41 +9,29 @@ import java.time.LocalDate;
 public class Windy {
 
     private static final String NAME = "Windy";
-    private final List<Task> tasks;
+    private final TaskList tasks;
     private final Storage storage;
+    private final Ui ui;
 
     private Windy() {
         List<Task> tasks1;
+        ui = new Ui();
         storage = new Storage("data/windy.txt");
         try {
             tasks1 = storage.loadTasks();
         } catch (IOException e) {
-            System.out.println("     Unable to load saved tasks: " + e.getMessage());
+            ui.showError("     Unable to load saved tasks: " + e.getMessage());
             tasks1 = new ArrayList<>();
         }
-        tasks = tasks1;
+        tasks = new TaskList(tasks1);
     }
 
     private void saveTasks() {
         try {
-            storage.saveTasks(tasks);
+            storage.saveTasks(tasks.getTasks());
         } catch (IOException e) {
-            System.out.println("     Unable to save tasks: " + e.getMessage());
+            ui.showError("     Unable to save tasks: " + e.getMessage());
         }
-    }
-
-    private void greet() {
-        printSeparator();
-
-        printWindyBanner();
-        System.out.println("     Hello! I'm " + NAME + ".");
-        System.out.println("     What can I do for you?");
-        printSeparator();
-    }
-
-    private void sayBye() {
-        System.out.println("     Bye. Hope to see you again soon!");
-        printSeparator();
     }
 
     /**
@@ -57,190 +41,79 @@ public class Windy {
      *      the type of task is defined by user's first input word
      */
     private void runCommandLoop() {
-        Scanner scanner = new Scanner(System.in);
         commandLoop:
-        while (scanner.hasNextLine()) {
-            String input = scanner.nextLine().trim();
-            String[] command = input.split("\\s+");
-            CommandType commandType = CommandType.from(command[0]);
+        while (ui.hasNextCommand()) {
+            String input = ui.readCommand();
+            String[] command = Parser.splitCommand(input);
+            CommandType commandType = Parser.parseCommandType(command[0]);
 
-            printSeparator();
+            ui.showLine();
             try {
+                Parser.parseInvalidCommand(commandType, command.length);
                 switch (commandType) {
                     case BYE -> {
-                        if (command.length == 1) {
-                            break commandLoop;
-                        }
-                        throw new InvalidInputFormatException("     Invalid command, please try another one");
+                        break commandLoop;
                     }
                     case LIST -> {
-                        if (command.length != 1) {
-                            throw new InvalidInputFormatException("     Invalid command, please try another one");
-                        }
                         this.listTasks();
                     }
                     case MARK, UNMARK -> {
-                        if (command.length != 2) {
-                            throw new InvalidInputFormatException("     Invalid format. Please use: mark TASK_NUMBER");
-                        }
                         this.markTask(command[1], commandType == CommandType.MARK);
                     }
                     case DELETE -> {
-                        if (command.length != 2) {
-                            throw new InvalidInputFormatException("     Invalid format. Please use: delete TASK_NUMBER");
-                        }
                         this.deleteTask(command[1]);
                     }
                     case TODO, DEADLINE, EVENT -> {
                         this.addTask(input, commandType);
                     }
                     case FIND -> {
-                        if (command.length != 2) {
-                            throw new InvalidInputFormatException("     Invalid format. Please use: find yyyy-M-d");
-                        }
                         this.findTaskOnDate(command[1]);
                     }
-                    case UNKNOWN -> {
-                        throw new InvalidInputFormatException("     Invalid command, please try another one");
-                    }
+                    case UNKNOWN -> {}
                 }
             } catch (InvalidInputFormatException e) {
-                System.out.println(e.getMessage());
+                ui.showError(e.getMessage());
             }
 
-            printSeparator();
+            ui.showLine();
         }
     }
 
     private void findTaskOnDate(String date) throws InvalidInputFormatException {
-        LocalDate localDate;
-        try {
-            localDate = LocalDate.parse(date
-                    , DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT));
-        } catch (DateTimeParseException e) {
-            throw new InvalidInputFormatException("     Invalid date format. Please write like find yyyy-M-d");
-        }
-        boolean isTaskFound = false;
-        for (Task task : this.tasks) {
-           if (task.isOccur(localDate)) {
-               System.out.println("     " + task);
-               isTaskFound = true;
-           }
-        }
-        if (!isTaskFound) {
-            System.out.println("     No such task found");
-        }
-    }
-
-    private int getValidTaskIndex(String taskNumber) throws InvalidInputFormatException {
-        int num;
-        try {
-            num = Integer.parseInt(taskNumber) - 1;
-        } catch (NumberFormatException e) {
-            throw new InvalidInputFormatException("     The number must be a positive integer");
-        }
-        if (num < 0 || num >= tasks.size()) {
-            if (tasks.isEmpty()) {
-                throw new InvalidInputFormatException("     There are no tasks in the list.");
-            } else {
-                throw new InvalidInputFormatException("     Invalid number of task, " +
-                        "please try the number between 1 and " + tasks.size());
-            }
-        }
-        return num;
+        LocalDate localDate = Parser.parseDate(date);
+        List<Task> tasksFound = tasks.findTaskByDate(localDate);
+        ui.showFindTask(tasksFound);
     }
 
     private void deleteTask(String taskNumber) throws InvalidInputFormatException {
-        int num =  getValidTaskIndex(taskNumber);
-
-        System.out.println("     Noted. I've removed this task:");
-        System.out.println("       " + tasks.get(num));
-        tasks.remove(num);
+        int num = Parser.parseTaskNumber(taskNumber, tasks.getNumTasks());
+        Task deletedTask = tasks.deleteTask(num);
+        ui.showDeleteTask(deletedTask, tasks.getNumTasks());
         saveTasks();
-        System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
     }
 
     private void markTask(String taskNumber, boolean mark) throws InvalidInputFormatException {
-        int num = getValidTaskIndex(taskNumber);
-        tasks.get(num).setDone(mark);
-        if (mark) {
-            System.out.println("     Nice! I've marked this task as done:");
-        } else {
-            System.out.println("     OK, I've marked this task as not done yet:");
-        }
+        int num = Parser.parseTaskNumber(taskNumber, tasks.getNumTasks());
+        tasks.markTask(num, mark);
         saveTasks();
-        System.out.println("       " + tasks.get(num));
+        ui.showMarkTask(mark, tasks.getTask(num));
     }
 
     private void addTask(String input, CommandType commandType) throws InvalidInputFormatException {
-        String[] command = input.split("\\s+");
-        if (command.length == 1) {
-            throw new InvalidInputFormatException("     The description of task cannot be empty");
-        }
-        String details = input.substring(command[0].length() + 1).trim();
-        switch (commandType) {
-            case TODO -> {
-                this.tasks.add(new Todo(details, false));
-            }
-            case DEADLINE -> {
-                String[] parts = details.split("\\s+/by\\s+", 2);
-                if (parts.length != 2) {
-                    throw new InvalidInputFormatException
-                            ("     The format of deadline is wrong. Please use description /by yyyy-M-d");
-                }
-                this.tasks.add(new Deadline(parts[0], false, parts[1]));
-            }
-            case EVENT -> {
-                String[] fromParts = details.split("\\s+/from\\s+", 2);
-                if (fromParts.length != 2) {
-                    throw new InvalidInputFormatException
-                            ("     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
-                }
-                String name = fromParts[0].trim();
-
-                String[] timeParts = fromParts[1].split("\\s+/to\\s+", 2);
-                if (timeParts.length != 2) {
-                    throw new InvalidInputFormatException
-                            ("     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
-                }
-                String from = timeParts[0].trim();
-                String to = timeParts[1].trim();
-                this.tasks.add(new Event(name, false, from, to));
-            }
-            default -> {
-                throw new InvalidInputFormatException("     Invalid command, please try another one");
-            }
-        }
+        Task newTask = Parser.parseNewTask(input, commandType);
+        tasks.addTask(newTask);
         saveTasks();
-        System.out.println("     Got it. I've added this task:");
-        System.out.println("       " + tasks.get(tasks.size() - 1));
-        System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
+        ui.showAddTask(newTask, tasks.getNumTasks());
     }
 
     private void listTasks() {
-        System.out.println("     Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println("     " + (i + 1) + "." + tasks.get(i));
-        }
-    }
-
-    private void printWindyBanner() {
-        String banner = "     __        ___           _       \n"
-                + "     \\ \\      / (_)_ __   __| |_   _ \n"
-                + "      \\ \\ /\\ / /| | '_ \\ / _` | | | |\n"
-                + "       \\ V  V / | | | | | (_| | |_| |\n"
-                + "        \\_/\\_/  |_|_| |_|\\__,_|\\__, |\n"
-                + "                               |___/ \n";
-        System.out.print(banner);
-    }
-    private void printSeparator() {
-        System.out.println("    ____________________________________________________________");
+        ui.showTaskList(tasks.getTasks());
     }
 
     public static void main(String[] args) {
         Windy windy = new Windy();
-        windy.greet();
+        windy.ui.showWelcome();
         windy.runCommandLoop();
-        windy.sayBye();
+        windy.ui.showBye();
     }
 }
