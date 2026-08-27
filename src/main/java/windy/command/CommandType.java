@@ -6,15 +6,25 @@ import java.util.Locale;
  * Represents a command supported by the Windy chatbot.
  */
 public enum CommandType {
+    /** Exits the application. */
     BYE,
+    /** Displays all saved tasks. */
     LIST,
+    /** Marks a task as completed. */
     MARK,
+    /** Marks a task as not completed. */
     UNMARK,
+    /** Removes a task. */
     DELETE,
+    /** Creates a task without a date. */
     TODO,
+    /** Creates a task with a due date. */
     DEADLINE,
+    /** Creates a task that spans a date range. */
     EVENT,
+    /** Finds incomplete tasks relevant on a date. */
     FIND,
+    /** Represents an unsupported command word. */
     UNKNOWN;
 
     /**

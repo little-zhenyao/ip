@@ -5,22 +5,41 @@ import windy.task.Task;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Handles all console input and output for the Windy application.
+ */
 public class Ui {
     private static final String NAME = "Windy";
     private Scanner scanner;
 
+    /**
+     * Creates a user interface that reads commands from standard input.
+     */
     public Ui() {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Checks whether another command is available from standard input.
+     *
+     * @return {@code true} if another line can be read
+     */
     public boolean hasNextCommand() {
         return scanner.hasNextLine();
     }
 
+    /**
+     * Reads and trims the next command from standard input.
+     *
+     * @return the next user command
+     */
     public String readCommand() {
         return scanner.nextLine().trim();
     }
 
+    /**
+     * Displays the application banner and greeting.
+     */
     public void showWelcome() {
         showLine();
         showBanner();
@@ -29,15 +48,28 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays the farewell message.
+     */
     public void showBye() {
         System.out.println("     Bye. Hope to see you again soon!");
         showLine();
     }
 
+    /**
+     * Displays an error message.
+     *
+     * @param message the message to display
+     */
     public void showError(String message) {
         System.out.println(message);
     }
 
+    /**
+     * Displays every task with its one-based task number.
+     *
+     * @param tasks the tasks to display
+     */
     public void showTaskList(List<Task> tasks) {
         System.out.println("     Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
@@ -45,12 +77,24 @@ public class Ui {
         }
     }
 
+    /**
+     * Displays the deleted task and the remaining task count.
+     *
+     * @param task the task that was removed
+     * @param taskCount the number of tasks remaining
+     */
     public void showDeleteTask(Task task, int taskCount) {
         System.out.println("     Noted. I've removed this task:");
         System.out.println("       " + task);
         System.out.println("     Now you have " + taskCount + " tasks in the list.");
     }
 
+    /**
+     * Displays confirmation of a task's updated completion status.
+     *
+     * @param mark {@code true} if the task was marked done; {@code false} otherwise
+     * @param task the updated task
+     */
     public void showMarkTask(boolean mark, Task task) {
         if (mark) {
             System.out.println("     Nice! I've marked this task as done:");
@@ -60,12 +104,23 @@ public class Ui {
         System.out.println("       " + task);
     }
 
+    /**
+     * Displays the added task and the updated task count.
+     *
+     * @param task the task that was added
+     * @param taskCount the number of tasks after the addition
+     */
     public void showAddTask(Task task, int taskCount) {
         System.out.println("     Got it. I've added this task:");
         System.out.println("       " + task);
         System.out.println("     Now you have " + taskCount + " tasks in the list.");
     }
 
+    /**
+     * Displays tasks found by a date search, or a message when none are found.
+     *
+     * @param tasks the matching tasks
+     */
     public void showFindTask(List<Task> tasks) {
         if (tasks.isEmpty()) {
             System.out.println("     No such task found");
@@ -77,6 +132,9 @@ public class Ui {
         }
     }
 
+    /**
+     * Displays the horizontal separator used between command responses.
+     */
     public void showLine() {
         System.out.println("    ____________________________________________________________");
     }

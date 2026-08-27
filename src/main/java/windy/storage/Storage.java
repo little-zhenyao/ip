@@ -12,13 +12,27 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Loads and saves tasks in Windy's plain-text data format.
+ */
 public class Storage {
     private final Path filepath;
 
+    /**
+     * Creates a storage manager for the specified file.
+     *
+     * @param filepath the path of the task data file
+     */
     public Storage(String filepath) {
         this.filepath = Path.of(filepath);
     }
 
+    /**
+     * Loads tasks from the data file, or returns an empty list if the file does not exist.
+     *
+     * @return the tasks stored in the file
+     * @throws IOException if the file cannot be read or contains an invalid task record
+     */
     public List<Task> loadTasks() throws IOException {
         List<Task> tasks = new ArrayList<>();
 
@@ -33,6 +47,12 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Writes all tasks to the data file, creating its parent directory when necessary.
+     *
+     * @param tasks the tasks to save
+     * @throws IOException if the tasks cannot be written
+     */
     public void saveTasks(List<Task> tasks) throws IOException {
         Path parent =  this.filepath.getParent();
         if (!Files.exists(parent)) {
@@ -42,6 +62,13 @@ public class Storage {
         Files.write(this.filepath, lines);
     }
 
+    /**
+     * Converts one stored record into its corresponding task object.
+     *
+     * @param line a line from the data file
+     * @return the task represented by the line
+     * @throws IOException if the record is incomplete or contains invalid data
+     */
     private Task parseTask(String line) throws IOException {
         String[] parts = line.split("\\s*\\|\\s*", -1);
 
