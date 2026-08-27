@@ -23,6 +23,9 @@ public class Windy {
     private final Storage storage;
     private final Ui ui;
 
+    /**
+     * Creates the application and restores tasks from the default data file.
+     */
     private Windy() {
         List<Task> tasks1;
         ui = new Ui();
@@ -36,6 +39,9 @@ public class Windy {
         tasks = new TaskList(tasks1);
     }
 
+    /**
+     * Saves the current task list and reports any storage error to the user.
+     */
     private void saveTasks() {
         try {
             storage.saveTasks(tasks.getTasks());
@@ -45,10 +51,7 @@ public class Windy {
     }
 
     /**
-     * If user's input is "list", list all the task
-     * If user's input is "bye", exit
-     * Otherwise, add a task named as user's input to the list
-     *      the type of task is defined by user's first input word
+     * Reads, validates, and executes commands until the user exits or input ends.
      */
     private void runCommandLoop() {
         commandLoop:
@@ -89,12 +92,24 @@ public class Windy {
         }
     }
 
+    /**
+     * Displays incomplete tasks that occur on the specified date.
+     *
+     * @param date the date to search for, in {@code yyyy-M-d} format
+     * @throws InvalidInputFormatException if the date is invalid
+     */
     private void findTaskOnDate(String date) throws InvalidInputFormatException {
         LocalDate localDate = Parser.parseDate(date);
         List<Task> tasksFound = tasks.findTaskByDate(localDate);
         ui.showFindTask(tasksFound);
     }
 
+    /**
+     * Deletes the selected task and saves the updated task list.
+     *
+     * @param taskNumber the one-based number of the task to delete
+     * @throws InvalidInputFormatException if the task number is invalid
+     */
     private void deleteTask(String taskNumber) throws InvalidInputFormatException {
         int num = Parser.parseTaskNumber(taskNumber, tasks.getNumTasks());
         Task deletedTask = tasks.deleteTask(num);
@@ -102,6 +117,13 @@ public class Windy {
         saveTasks();
     }
 
+    /**
+     * Updates a task's completion status and saves the task list.
+     *
+     * @param taskNumber the one-based number of the task to update
+     * @param mark {@code true} to mark the task done; {@code false} to mark it not done
+     * @throws InvalidInputFormatException if the task number is invalid
+     */
     private void markTask(String taskNumber, boolean mark) throws InvalidInputFormatException {
         int num = Parser.parseTaskNumber(taskNumber, tasks.getNumTasks());
         tasks.markTask(num, mark);
@@ -109,6 +131,13 @@ public class Windy {
         ui.showMarkTask(mark, tasks.getTask(num));
     }
 
+    /**
+     * Parses and adds a new task, then saves the task list.
+     *
+     * @param input the complete task-creation command
+     * @param commandType the type of task to create
+     * @throws InvalidInputFormatException if the task details are invalid
+     */
     private void addTask(String input, CommandType commandType) throws InvalidInputFormatException {
         Task newTask = Parser.parseNewTask(input, commandType);
         tasks.addTask(newTask);
@@ -116,10 +145,18 @@ public class Windy {
         ui.showAddTask(newTask, tasks.getNumTasks());
     }
 
+    /**
+     * Displays all tasks currently in the task list.
+     */
     private void listTasks() {
         ui.showTaskList(tasks.getTasks());
     }
 
+    /**
+     * Starts the Windy command-line application.
+     *
+     * @param args command-line arguments; currently unused
+     */
     public static void main(String[] args) {
         Windy windy = new Windy();
         windy.ui.showWelcome();
