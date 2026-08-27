@@ -11,10 +11,10 @@ public class Todo extends Task {
      * Creates a task without an associated date.
      *
      * @param name the task description
-     * @param done whether the task has been completed
+     * @param isDone whether the task has been completed
      */
-    public Todo(String name, boolean done) {
-        super(name, done);
+    public Todo(String name, boolean isDone) {
+        super(name, isDone);
     }
 
     /** {@inheritDoc} */
@@ -31,7 +31,7 @@ public class Todo extends Task {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isOccur(LocalDate date) {
+    public boolean occursOnDate(LocalDate date) {
         return false;
     }
 }

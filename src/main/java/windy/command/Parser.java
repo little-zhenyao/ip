@@ -1,22 +1,23 @@
 package windy.command;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+
 import windy.exception.InvalidInputFormatException;
 import windy.task.Deadline;
 import windy.task.Event;
 import windy.task.Task;
 import windy.task.Todo;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
-
 /**
  * Parses user input and validates command arguments for the Windy application.
  */
 public class Parser {
 
-    private Parser() {}
+    private Parser() {
+    }
 
     /**
      * Creates a task from the details supplied with a task-creation command.
@@ -27,11 +28,11 @@ public class Parser {
      * @throws InvalidInputFormatException if required task details are missing or malformed
      */
     public static Task parseNewTask(String input, CommandType commandType) throws InvalidInputFormatException {
-        String[] command = input.split("\\s+");
-        if (command.length == 1) {
+        String[] commandParts = input.split("\\s+");
+        if (commandParts.length == 1) {
             throw new InvalidInputFormatException("     The description of task cannot be empty");
         }
-        String details = input.substring(command[0].length() + 1).trim();
+        String details = input.substring(commandParts[0].length() + 1).trim();
         switch (commandType) {
             case TODO -> {
                 return new Todo(details, false);
@@ -39,23 +40,23 @@ public class Parser {
             case DEADLINE -> {
                 String[] parts = details.split("\\s+/by\\s+", 2);
                 if (parts.length != 2) {
-                    throw new InvalidInputFormatException
-                            ("     The format of deadline is wrong. Please use description /by yyyy-M-d");
+                    throw new InvalidInputFormatException(
+                            "     The format of deadline is wrong. Please use description /by yyyy-M-d");
                 }
                 return new Deadline(parts[0], false, parts[1]);
             }
             case EVENT -> {
                 String[] fromParts = details.split("\\s+/from\\s+", 2);
                 if (fromParts.length != 2) {
-                    throw new InvalidInputFormatException
-                            ("     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
+                    throw new InvalidInputFormatException(
+                            "     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
                 }
                 String name = fromParts[0].trim();
 
                 String[] timeParts = fromParts[1].split("\\s+/to\\s+", 2);
                 if (timeParts.length != 2) {
-                    throw new InvalidInputFormatException
-                            ("     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
+                    throw new InvalidInputFormatException(
+                            "     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
                 }
                 String from = timeParts[0].trim();
                 String to = timeParts[1].trim();
@@ -71,26 +72,26 @@ public class Parser {
      * Converts a one-based task number from user input to a valid list index.
      *
      * @param taskNumber the task number entered by the user
-     * @param taskSize the current number of tasks
+     * @param taskCount the current number of tasks
      * @return the corresponding zero-based task index
      * @throws InvalidInputFormatException if the number is not an integer or is outside the task list
      */
-    public static int parseTaskNumber(String taskNumber, int taskSize) throws InvalidInputFormatException {
-        int num;
+    public static int parseTaskNumber(String taskNumber, int taskCount) throws InvalidInputFormatException {
+        int taskIndex;
         try {
-            num = Integer.parseInt(taskNumber) - 1;
-        } catch (NumberFormatException e) {
+            taskIndex = Integer.parseInt(taskNumber) - 1;
+        } catch (NumberFormatException exception) {
             throw new InvalidInputFormatException("     The number must be a positive integer");
         }
-        if (num < 0 || num >= taskSize) {
-            if (taskSize == 0) {
+        if (taskIndex < 0 || taskIndex >= taskCount) {
+            if (taskCount == 0) {
                 throw new InvalidInputFormatException("     There are no tasks in the list.");
             } else {
-                throw new InvalidInputFormatException("     Invalid number of task, " +
-                        "please try the number between 1 and " + taskSize + ".");
+                throw new InvalidInputFormatException("     Invalid number of task, "
+                        + "please try the number between 1 and " + taskCount + ".");
             }
         }
-        return num;
+        return taskIndex;
     }
 
     /**
@@ -103,9 +104,9 @@ public class Parser {
     public static LocalDate parseDate(String date) throws InvalidInputFormatException {
         LocalDate localDate;
         try {
-            localDate = LocalDate.parse(date
-                    , DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT));
-        } catch (DateTimeParseException e) {
+            localDate = LocalDate.parse(date,
+                    DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT));
+        } catch (DateTimeParseException exception) {
             throw new InvalidInputFormatException("     Invalid date format. Please write like find yyyy-M-d");
         }
         return localDate;
@@ -135,24 +136,25 @@ public class Parser {
      * Validates that a command contains the expected number of words.
      *
      * @param commandType the command being validated
-     * @param length the number of words in the command
+     * @param commandLength the number of words in the command
      * @throws InvalidInputFormatException if the command has an unsupported type or argument count
      */
-    public static void parseInvalidCommand(CommandType commandType, int length) throws InvalidInputFormatException {
+    public static void parseInvalidCommand(CommandType commandType, int commandLength)
+            throws InvalidInputFormatException {
         switch (commandType) {
-            case BYE, LIST ->  {
-                if (length != 1) {
+            case BYE, LIST -> {
+                if (commandLength != 1) {
                     throw new InvalidInputFormatException("     Invalid command, please try another one");
                 }
             }
-            case MARK, UNMARK, DELETE ->  {
-                if (length != 2) {
-                    throw new InvalidInputFormatException
-                            ("     Invalid format. Please use: " + commandType.name().toLowerCase() + " TASK_NUMBER");
+            case MARK, UNMARK, DELETE -> {
+                if (commandLength != 2) {
+                    throw new InvalidInputFormatException("     Invalid format. Please use: "
+                            + commandType.name().toLowerCase() + " TASK_NUMBER");
                 }
             }
-            case FIND ->  {
-                if (length != 2) {
+            case FIND -> {
+                if (commandLength != 2) {
                     throw new InvalidInputFormatException("     Invalid format. Please use: find yyyy-M-d");
                 }
             }

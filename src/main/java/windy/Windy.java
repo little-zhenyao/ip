@@ -1,5 +1,10 @@
 package windy;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import windy.command.CommandType;
 import windy.command.Parser;
 import windy.exception.InvalidInputFormatException;
@@ -8,17 +13,11 @@ import windy.task.Task;
 import windy.task.TaskList;
 import windy.ui.Ui;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.time.LocalDate;
-
 /**
  * The main class for the Windy chatbot application.
  */
 public class Windy {
 
-    private static final String NAME = "Windy";
     private final TaskList tasks;
     private final Storage storage;
     private final Ui ui;
@@ -27,16 +26,16 @@ public class Windy {
      * Creates the application and restores tasks from the default data file.
      */
     private Windy() {
-        List<Task> tasks1;
+        List<Task> loadedTasks;
         ui = new Ui();
         storage = new Storage("data/windy.txt");
         try {
-            tasks1 = storage.loadTasks();
-        } catch (IOException e) {
-            ui.showError("     Unable to load saved tasks: " + e.getMessage());
-            tasks1 = new ArrayList<>();
+            loadedTasks = storage.loadTasks();
+        } catch (IOException exception) {
+            ui.showError("     Unable to load saved tasks: " + exception.getMessage());
+            loadedTasks = new ArrayList<>();
         }
-        tasks = new TaskList(tasks1);
+        tasks = new TaskList(loadedTasks);
     }
 
     /**
@@ -45,8 +44,8 @@ public class Windy {
     private void saveTasks() {
         try {
             storage.saveTasks(tasks.getTasks());
-        } catch (IOException e) {
-            ui.showError("     Unable to save tasks: " + e.getMessage());
+        } catch (IOException exception) {
+            ui.showError("     Unable to save tasks: " + exception.getMessage());
         }
     }
 
@@ -57,12 +56,12 @@ public class Windy {
         commandLoop:
         while (ui.hasNextCommand()) {
             String input = ui.readCommand();
-            String[] command = Parser.splitCommand(input);
-            CommandType commandType = Parser.parseCommandType(command[0]);
+            String[] commandParts = Parser.splitCommand(input);
+            CommandType commandType = Parser.parseCommandType(commandParts[0]);
 
             ui.showLine();
             try {
-                Parser.parseInvalidCommand(commandType, command.length);
+                Parser.parseInvalidCommand(commandType, commandParts.length);
                 switch (commandType) {
                     case BYE -> {
                         break commandLoop;
@@ -71,21 +70,21 @@ public class Windy {
                         this.listTasks();
                     }
                     case MARK, UNMARK -> {
-                        this.markTask(command[1], commandType == CommandType.MARK);
+                        this.markTask(commandParts[1], commandType == CommandType.MARK);
                     }
                     case DELETE -> {
-                        this.deleteTask(command[1]);
+                        this.deleteTask(commandParts[1]);
                     }
                     case TODO, DEADLINE, EVENT -> {
                         this.addTask(input, commandType);
                     }
                     case FIND -> {
-                        this.findTaskOnDate(command[1]);
+                        this.findTasksOnDate(commandParts[1]);
                     }
                     case UNKNOWN -> {}
                 }
-            } catch (InvalidInputFormatException e) {
-                ui.showError(e.getMessage());
+            } catch (InvalidInputFormatException exception) {
+                ui.showError(exception.getMessage());
             }
 
             ui.showLine();
@@ -98,10 +97,10 @@ public class Windy {
      * @param date the date to search for, in {@code yyyy-M-d} format
      * @throws InvalidInputFormatException if the date is invalid
      */
-    private void findTaskOnDate(String date) throws InvalidInputFormatException {
+    private void findTasksOnDate(String date) throws InvalidInputFormatException {
         LocalDate localDate = Parser.parseDate(date);
-        List<Task> tasksFound = tasks.findTaskByDate(localDate);
-        ui.showFindTask(tasksFound);
+        List<Task> foundTasks = tasks.findTasksByDate(localDate);
+        ui.showFoundTasks(foundTasks);
     }
 
     /**
@@ -111,8 +110,8 @@ public class Windy {
      * @throws InvalidInputFormatException if the task number is invalid
      */
     private void deleteTask(String taskNumber) throws InvalidInputFormatException {
-        int num = Parser.parseTaskNumber(taskNumber, tasks.getNumTasks());
-        Task deletedTask = tasks.deleteTask(num);
+        int taskIndex = Parser.parseTaskNumber(taskNumber, tasks.getNumTasks());
+        Task deletedTask = tasks.deleteTask(taskIndex);
         ui.showDeleteTask(deletedTask, tasks.getNumTasks());
         saveTasks();
     }
@@ -121,14 +120,14 @@ public class Windy {
      * Updates a task's completion status and saves the task list.
      *
      * @param taskNumber the one-based number of the task to update
-     * @param mark {@code true} to mark the task done; {@code false} to mark it not done
+     * @param isMarked {@code true} to mark the task done; {@code false} to mark it not done
      * @throws InvalidInputFormatException if the task number is invalid
      */
-    private void markTask(String taskNumber, boolean mark) throws InvalidInputFormatException {
-        int num = Parser.parseTaskNumber(taskNumber, tasks.getNumTasks());
-        tasks.markTask(num, mark);
+    private void markTask(String taskNumber, boolean isMarked) throws InvalidInputFormatException {
+        int taskIndex = Parser.parseTaskNumber(taskNumber, tasks.getNumTasks());
+        tasks.markTask(taskIndex, isMarked);
         saveTasks();
-        ui.showMarkTask(mark, tasks.getTask(num));
+        ui.showMarkTask(isMarked, tasks.getTask(taskIndex));
     }
 
     /**

@@ -1,16 +1,16 @@
 package windy.ui;
 
-import windy.task.Task;
-
 import java.util.List;
 import java.util.Scanner;
+
+import windy.task.Task;
 
 /**
  * Handles all console input and output for the Windy application.
  */
 public class Ui {
     private static final String NAME = "Windy";
-    private Scanner scanner;
+    private final Scanner scanner;
 
     /**
      * Creates a user interface that reads commands from standard input.
@@ -92,11 +92,11 @@ public class Ui {
     /**
      * Displays confirmation of a task's updated completion status.
      *
-     * @param mark {@code true} if the task was marked done; {@code false} otherwise
+     * @param isMarked {@code true} if the task was marked done; {@code false} otherwise
      * @param task the updated task
      */
-    public void showMarkTask(boolean mark, Task task) {
-        if (mark) {
+    public void showMarkTask(boolean isMarked, Task task) {
+        if (isMarked) {
             System.out.println("     Nice! I've marked this task as done:");
         } else {
             System.out.println("     OK, I've marked this task as not done yet:");
@@ -121,7 +121,7 @@ public class Ui {
      *
      * @param tasks the matching tasks
      */
-    public void showFindTask(List<Task> tasks) {
+    public void showFoundTasks(List<Task> tasks) {
         if (tasks.isEmpty()) {
             System.out.println("     No such task found");
             return;

@@ -13,11 +13,11 @@ public abstract class Task {
      * Creates a task with the given description and completion status.
      *
      * @param name the task description
-     * @param done whether the task has been completed
+     * @param isDone whether the task has been completed
      */
-    public Task(String name, boolean done) {
+    public Task(String name, boolean isDone) {
         this.name = name;
-        this.isDone = done;
+        this.isDone = isDone;
     }
 
     /**
@@ -50,10 +50,10 @@ public abstract class Task {
     /**
      * Changes the task's completion status.
      *
-     * @param done the new completion status
+     * @param isDone the new completion status
      */
-    public void setDone(boolean done) {
-        isDone = done;
+    public void setDone(boolean isDone) {
+        this.isDone = isDone;
     }
 
     /**
@@ -69,5 +69,5 @@ public abstract class Task {
      * @param date the date to check
      * @return {@code true} if the task occurs on the date and is not completed
      */
-    public abstract boolean isOccur(LocalDate date);
+    public abstract boolean occursOnDate(LocalDate date);
 }

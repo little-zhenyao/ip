@@ -36,7 +36,7 @@ public enum CommandType {
     public static CommandType from(String commandWord) {
         try {
             return CommandType.valueOf(commandWord.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException exception) {
             return UNKNOWN;
         }
     }

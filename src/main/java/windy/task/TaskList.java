@@ -40,11 +40,11 @@ public class TaskList {
     /**
      * Removes and returns the task at the specified index.
      *
-     * @param index the zero-based index of the task
+     * @param taskIndex the zero-based index of the task
      * @return the removed task
      */
-    public Task deleteTask(int index) {
-        return tasks.remove(index);
+    public Task deleteTask(int taskIndex) {
+        return tasks.remove(taskIndex);
     }
 
     /**
@@ -52,28 +52,28 @@ public class TaskList {
      *
      * @return the task count
      */
-    public int  getNumTasks() {
+    public int getNumTasks() {
         return tasks.size();
     }
 
     /**
      * Returns the task at the specified index.
      *
-     * @param num the zero-based index of the task
+     * @param taskIndex the zero-based index of the task
      * @return the selected task
      */
-    public Task getTask(int num) {
-        return tasks.get(num);
+    public Task getTask(int taskIndex) {
+        return tasks.get(taskIndex);
     }
 
     /**
      * Changes the completion status of a selected task.
      *
-     * @param num the zero-based index of the task
-     * @param mark {@code true} to mark it done; {@code false} to mark it not done
+     * @param taskIndex the zero-based index of the task
+     * @param isMarked {@code true} to mark it done; {@code false} to mark it not done
      */
-    public void markTask(int num, boolean mark) {
-        tasks.get(num).setDone(mark);
+    public void markTask(int taskIndex, boolean isMarked) {
+        tasks.get(taskIndex).setDone(isMarked);
     }
 
     /**
@@ -82,13 +82,13 @@ public class TaskList {
      * @param localDate the date to search for
      * @return tasks that occur on the date
      */
-    public List<Task> findTaskByDate(LocalDate localDate) {
-        List<Task> tasksFound = new ArrayList<>();
+    public List<Task> findTasksByDate(LocalDate localDate) {
+        List<Task> foundTasks = new ArrayList<>();
         for (Task task : this.tasks) {
-            if (task.isOccur(localDate)) {
-                tasksFound.add(task);
+            if (task.occursOnDate(localDate)) {
+                foundTasks.add(task);
             }
         }
-        return tasksFound;
+        return foundTasks;
     }
 }
