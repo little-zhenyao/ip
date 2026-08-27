@@ -22,7 +22,7 @@ public class Ui {
     /**
      * Checks whether another command is available from standard input.
      *
-     * @return {@code true} if another line can be read
+     * @return {@code true} if another line can be read.
      */
     public boolean hasNextCommand() {
         return scanner.hasNextLine();
@@ -31,7 +31,7 @@ public class Ui {
     /**
      * Reads and trims the next command from standard input.
      *
-     * @return the next user command
+     * @return the next user command.
      */
     public String readCommand() {
         return scanner.nextLine().trim();
@@ -59,7 +59,7 @@ public class Ui {
     /**
      * Displays an error message.
      *
-     * @param message the message to display
+     * @param message the message to display.
      */
     public void showError(String message) {
         System.out.println(message);
@@ -68,7 +68,7 @@ public class Ui {
     /**
      * Displays every task with its one-based task number.
      *
-     * @param tasks the tasks to display
+     * @param tasks the tasks to display.
      */
     public void showTaskList(List<Task> tasks) {
         System.out.println("     Here are the tasks in your list:");
@@ -80,8 +80,8 @@ public class Ui {
     /**
      * Displays the deleted task and the remaining task count.
      *
-     * @param task the task that was removed
-     * @param taskCount the number of tasks remaining
+     * @param task the task that was removed.
+     * @param taskCount the number of tasks remaining.
      */
     public void showDeleteTask(Task task, int taskCount) {
         System.out.println("     Noted. I've removed this task:");
@@ -92,8 +92,8 @@ public class Ui {
     /**
      * Displays confirmation of a task's updated completion status.
      *
-     * @param isMarked {@code true} if the task was marked done; {@code false} otherwise
-     * @param task the updated task
+     * @param isMarked {@code true} if the task was marked done; {@code false} otherwise.
+     * @param task the updated task.
      */
     public void showMarkTask(boolean isMarked, Task task) {
         if (isMarked) {
@@ -107,8 +107,8 @@ public class Ui {
     /**
      * Displays the added task and the updated task count.
      *
-     * @param task the task that was added
-     * @param taskCount the number of tasks after the addition
+     * @param task the task that was added.
+     * @param taskCount the number of tasks after the addition.
      */
     public void showAddTask(Task task, int taskCount) {
         System.out.println("     Got it. I've added this task:");
@@ -117,9 +117,9 @@ public class Ui {
     }
 
     /**
-     * Displays tasks found by a date search, or a message when none are found.
+     * Displays matching tasks, or a message when none are found.
      *
-     * @param tasks the matching tasks
+     * @param tasks the matching tasks.
      */
     public void showFoundTasks(List<Task> tasks) {
         if (tasks.isEmpty()) {

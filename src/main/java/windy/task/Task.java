@@ -12,8 +12,8 @@ public abstract class Task {
     /**
      * Creates a task with the given description and completion status.
      *
-     * @param name the task description
-     * @param isDone whether the task has been completed
+     * @param name the task description.
+     * @param isDone whether the task has been completed.
      */
     public Task(String name, boolean isDone) {
         this.name = name;
@@ -23,7 +23,7 @@ public abstract class Task {
     /**
      * Returns the symbol used to display the task's completion status.
      *
-     * @return {@code X} if the task is done, or a space otherwise
+     * @return {@code X} if the task is done, or a space otherwise.
      */
     public String getStatus() {
         return isDone ? "X" : " ";
@@ -32,7 +32,7 @@ public abstract class Task {
     /**
      * Checks whether the task has been completed.
      *
-     * @return {@code true} if the task is done
+     * @return {@code true} if the task is done.
      */
     public boolean isDone() {
         return isDone;
@@ -41,7 +41,7 @@ public abstract class Task {
     /**
      * Returns the task description.
      *
-     * @return the task description
+     * @return the task description.
      */
     public String getName() {
         return name;
@@ -50,7 +50,7 @@ public abstract class Task {
     /**
      * Changes the task's completion status.
      *
-     * @param isDone the new completion status
+     * @param isDone the new completion status.
      */
     public void setDone(boolean isDone) {
         this.isDone = isDone;
@@ -59,8 +59,8 @@ public abstract class Task {
     /**
      * Returns whether this task's description contains the specified keyword.
      *
-     * @param keyword the keyword to search for
-     * @return {@code true} if the task description contains the keyword
+     * @param keyword the keyword to search for.
+     * @return {@code true} if the task description contains the keyword.
      */
     public boolean containsKeyword(String keyword) {
         return name.contains(keyword);
@@ -69,15 +69,15 @@ public abstract class Task {
     /**
      * Converts the task to the format used in the data file.
      *
-     * @return the serialized task
+     * @return the serialized task.
      */
     public abstract String toDataString();
 
     /**
      * Checks whether this incomplete task is relevant on the specified date.
      *
-     * @param date the date to check
-     * @return {@code true} if the task occurs on the date and is not completed
+     * @param date the date to check.
+     * @return {@code true} if the task occurs on the date and is not completed.
      */
     public abstract boolean occursOnDate(LocalDate date);
 }

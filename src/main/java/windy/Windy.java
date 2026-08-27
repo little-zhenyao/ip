@@ -97,7 +97,7 @@ public class Windy {
     /**
      * Displays tasks whose descriptions contain the specified keyword.
      *
-     * @param keyword the keyword to search for
+     * @param keyword the keyword to search for.
      */
     private void findTasksContainingKeyword(String keyword) {
         List<Task> foundTasks = tasks.findTasksContainingKeyword(keyword);
@@ -107,8 +107,8 @@ public class Windy {
     /**
      * Displays incomplete tasks that occur on the specified date.
      *
-     * @param date the date to search for, in {@code yyyy-M-d} format
-     * @throws InvalidInputFormatException if the date is invalid
+     * @param date the date to search for, in {@code yyyy-M-d} format.
+     * @throws InvalidInputFormatException if the date is invalid.
      */
     private void findTasksOnDate(String date) throws InvalidInputFormatException {
         LocalDate localDate = Parser.parseDate(date);
@@ -119,8 +119,8 @@ public class Windy {
     /**
      * Deletes the selected task and saves the updated task list.
      *
-     * @param taskNumber the one-based number of the task to delete
-     * @throws InvalidInputFormatException if the task number is invalid
+     * @param taskNumber the one-based number of the task to delete.
+     * @throws InvalidInputFormatException if the task number is invalid.
      */
     private void deleteTask(String taskNumber) throws InvalidInputFormatException {
         int taskIndex = Parser.parseTaskNumber(taskNumber, tasks.getNumTasks());
@@ -132,9 +132,9 @@ public class Windy {
     /**
      * Updates a task's completion status and saves the task list.
      *
-     * @param taskNumber the one-based number of the task to update
-     * @param isMarked {@code true} to mark the task done; {@code false} to mark it not done
-     * @throws InvalidInputFormatException if the task number is invalid
+     * @param taskNumber the one-based number of the task to update.
+     * @param isMarked {@code true} to mark the task done; {@code false} to mark it not done.
+     * @throws InvalidInputFormatException if the task number is invalid.
      */
     private void markTask(String taskNumber, boolean isMarked) throws InvalidInputFormatException {
         int taskIndex = Parser.parseTaskNumber(taskNumber, tasks.getNumTasks());
@@ -146,9 +146,9 @@ public class Windy {
     /**
      * Parses and adds a new task, then saves the task list.
      *
-     * @param input the complete task-creation command
-     * @param commandType the type of task to create
-     * @throws InvalidInputFormatException if the task details are invalid
+     * @param input the complete task-creation command.
+     * @param commandType the type of task to create.
+     * @throws InvalidInputFormatException if the task details are invalid.
      */
     private void addTask(String input, CommandType commandType) throws InvalidInputFormatException {
         Task newTask = Parser.parseNewTask(input, commandType);
@@ -167,7 +167,7 @@ public class Windy {
     /**
      * Starts the Windy command-line application.
      *
-     * @param args command-line arguments; currently unused
+     * @param args command-line arguments; currently unused.
      */
     public static void main(String[] args) {
         Windy windy = new Windy();

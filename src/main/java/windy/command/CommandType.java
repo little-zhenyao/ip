@@ -32,8 +32,8 @@ public enum CommandType {
     /**
      * Converts the first word of a user's input into a command type.
      *
-     * @param commandWord the first word entered by the user
-     * @return the corresponding command type, or {@link #UNKNOWN} if it is unsupported
+     * @param commandWord the first word entered by the user.
+     * @return the corresponding command type, or {@link #UNKNOWN} if it is unsupported.
      */
     public static CommandType from(String commandWord) {
         try {

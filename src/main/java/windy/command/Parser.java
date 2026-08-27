@@ -22,10 +22,10 @@ public class Parser {
     /**
      * Creates a task from the details supplied with a task-creation command.
      *
-     * @param input the complete command entered by the user
-     * @param commandType the type of task to create
-     * @return the task described by the command
-     * @throws InvalidInputFormatException if required task details are missing or malformed
+     * @param input the complete command entered by the user.
+     * @param commandType the type of task to create.
+     * @return the task described by the command.
+     * @throws InvalidInputFormatException if required task details are missing or malformed.
      */
     public static Task parseNewTask(String input, CommandType commandType) throws InvalidInputFormatException {
         String[] commandParts = input.split("\\s+");
@@ -71,10 +71,10 @@ public class Parser {
     /**
      * Converts a one-based task number from user input to a valid list index.
      *
-     * @param taskNumber the task number entered by the user
-     * @param taskCount the current number of tasks
-     * @return the corresponding zero-based task index
-     * @throws InvalidInputFormatException if the number is not an integer or is outside the task list
+     * @param taskNumber the task number entered by the user.
+     * @param taskCount the current number of tasks.
+     * @return the corresponding zero-based task index.
+     * @throws InvalidInputFormatException if the number is not an integer or is outside the task list.
      */
     public static int parseTaskNumber(String taskNumber, int taskCount) throws InvalidInputFormatException {
         int taskIndex;
@@ -97,9 +97,9 @@ public class Parser {
     /**
      * Parses a date in the {@code yyyy-M-d} format.
      *
-     * @param date the date text to parse
-     * @return the parsed date
-     * @throws InvalidInputFormatException if the date is invalid or uses an unsupported format
+     * @param date the date text to parse.
+     * @return the parsed date.
+     * @throws InvalidInputFormatException if the date is invalid or uses an unsupported format.
      */
     public static LocalDate parseDate(String date) throws InvalidInputFormatException {
         LocalDate localDate;
@@ -115,8 +115,8 @@ public class Parser {
     /**
      * Splits a command into whitespace-separated words.
      *
-     * @param input the command entered by the user
-     * @return the words in the command
+     * @param input the command entered by the user.
+     * @return the words in the command.
      */
     public static String[] splitCommand(String input) {
         return input.split("\\s+");
@@ -125,8 +125,8 @@ public class Parser {
     /**
      * Identifies the command represented by a command word.
      *
-     * @param command the first word of the user's input
-     * @return the matching command type, or {@link CommandType#UNKNOWN} if none matches
+     * @param command the first word of the user's input.
+     * @return the matching command type, or {@link CommandType#UNKNOWN} if none matches.
      */
     public static CommandType parseCommandType(String command) {
         return CommandType.from(command);
@@ -135,9 +135,9 @@ public class Parser {
     /**
      * Validates that a command contains the expected number of words.
      *
-     * @param commandType the command being validated
-     * @param commandLength the number of words in the command
-     * @throws InvalidInputFormatException if the command has an unsupported type or argument count
+     * @param commandType the command being validated.
+     * @param commandLength the number of words in the command.
+     * @throws InvalidInputFormatException if the command has an unsupported type or argument count.
      */
     public static void parseInvalidCommand(CommandType commandType, int commandLength)
             throws InvalidInputFormatException {

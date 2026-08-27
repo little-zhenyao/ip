@@ -13,7 +13,7 @@ public class TaskList {
     /**
      * Creates a task list backed by the supplied list.
      *
-     * @param tasks the initial tasks
+     * @param tasks the initial tasks.
      */
     public TaskList(List<Task> tasks) {
         this.tasks = tasks;
@@ -22,7 +22,7 @@ public class TaskList {
     /**
      * Adds a task to the end of the list.
      *
-     * @param task the task to add
+     * @param task the task to add.
      */
     public void addTask(Task task) {
         tasks.add(task);
@@ -31,7 +31,7 @@ public class TaskList {
     /**
      * Returns an unmodifiable snapshot of the current tasks.
      *
-     * @return a copy of the task list
+     * @return a copy of the task list.
      */
     public List<Task> getTasks() {
         return List.copyOf(tasks);
@@ -40,8 +40,8 @@ public class TaskList {
     /**
      * Removes and returns the task at the specified index.
      *
-     * @param taskIndex the zero-based index of the task
-     * @return the removed task
+     * @param taskIndex the zero-based index of the task.
+     * @return the removed task.
      */
     public Task deleteTask(int taskIndex) {
         return tasks.remove(taskIndex);
@@ -50,7 +50,7 @@ public class TaskList {
     /**
      * Returns the number of tasks in the list.
      *
-     * @return the task count
+     * @return the task count.
      */
     public int getNumTasks() {
         return tasks.size();
@@ -59,8 +59,8 @@ public class TaskList {
     /**
      * Returns the task at the specified index.
      *
-     * @param taskIndex the zero-based index of the task
-     * @return the selected task
+     * @param taskIndex the zero-based index of the task.
+     * @return the selected task.
      */
     public Task getTask(int taskIndex) {
         return tasks.get(taskIndex);
@@ -69,8 +69,8 @@ public class TaskList {
     /**
      * Changes the completion status of a selected task.
      *
-     * @param taskIndex the zero-based index of the task
-     * @param isMarked {@code true} to mark it done; {@code false} to mark it not done
+     * @param taskIndex the zero-based index of the task.
+     * @param isMarked {@code true} to mark it done; {@code false} to mark it not done.
      */
     public void markTask(int taskIndex, boolean isMarked) {
         tasks.get(taskIndex).setDone(isMarked);
@@ -79,8 +79,8 @@ public class TaskList {
     /**
      * Finds incomplete tasks that occur on the specified date.
      *
-     * @param localDate the date to search for
-     * @return tasks that occur on the date
+     * @param localDate the date to search for.
+     * @return tasks that occur on the date.
      */
     public List<Task> findTasksByDate(LocalDate localDate) {
         List<Task> foundTasks = new ArrayList<>();
@@ -95,8 +95,8 @@ public class TaskList {
     /**
      * Finds all tasks whose descriptions contain the specified keyword.
      *
-     * @param keyword the keyword to search for
-     * @return tasks with descriptions that contain the keyword
+     * @param keyword the keyword to search for.
+     * @return tasks with descriptions that contain the keyword.
      */
     public List<Task> findTasksContainingKeyword(String keyword) {
         List<Task> foundTasks = new ArrayList<>();
