@@ -76,7 +76,7 @@ public class Windy {
                     case TODO, DEADLINE, EVENT -> {
                         this.addTask(input, commandType);
                     }
-                    case FIND -> {
+                    case DATE -> {
                         this.findTaskOnDate(command[1]);
                     }
                     case UNKNOWN -> {}
