@@ -106,6 +106,11 @@ public class Parser {
                             ("     Invalid format. Please use: " + commandType.name().toLowerCase() + " TASK_NUMBER");
                 }
             }
+            case FIND -> {
+                if (length != 2) {
+                    throw new InvalidInputFormatException("     Invalid format. Please use: find keyword");
+                }
+            }
             case DATE ->  {
                 if (length != 2) {
                     throw new InvalidInputFormatException("     Invalid format. Please use: date yyyy-M-d");

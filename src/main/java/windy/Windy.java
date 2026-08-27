@@ -76,6 +76,9 @@ public class Windy {
                     case TODO, DEADLINE, EVENT -> {
                         this.addTask(input, commandType);
                     }
+                    case FIND -> {
+                        this.findTasksContainingKeyword(command[1]);
+                    }
                     case DATE -> {
                         this.findTaskOnDate(command[1]);
                     }
@@ -87,6 +90,11 @@ public class Windy {
 
             ui.showLine();
         }
+    }
+
+    private void findTasksContainingKeyword(String keyword) {
+        List<Task> tasksFound = tasks.findTasksContainingKeyword(keyword);
+        ui.showFindTask(tasksFound);
     }
 
     private void findTaskOnDate(String date) throws InvalidInputFormatException {
