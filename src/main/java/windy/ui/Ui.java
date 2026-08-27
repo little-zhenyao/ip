@@ -1,13 +1,13 @@
 package windy.ui;
 
-import windy.task.Task;
-
 import java.util.List;
 import java.util.Scanner;
 
+import windy.task.Task;
+
 public class Ui {
     private static final String NAME = "Windy";
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public Ui() {
         this.scanner = new Scanner(System.in);
@@ -51,8 +51,8 @@ public class Ui {
         System.out.println("     Now you have " + taskCount + " tasks in the list.");
     }
 
-    public void showMarkTask(boolean mark, Task task) {
-        if (mark) {
+    public void showMarkTask(boolean isMarked, Task task) {
+        if (isMarked) {
             System.out.println("     Nice! I've marked this task as done:");
         } else {
             System.out.println("     OK, I've marked this task as not done yet:");
@@ -66,7 +66,7 @@ public class Ui {
         System.out.println("     Now you have " + taskCount + " tasks in the list.");
     }
 
-    public void showFindTask(List<Task> tasks) {
+    public void showFoundTasks(List<Task> tasks) {
         if (tasks.isEmpty()) {
             System.out.println("     No such task found");
             return;

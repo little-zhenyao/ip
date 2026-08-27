@@ -1,45 +1,45 @@
 package windy.storage;
 
-import windy.exception.InvalidInputFormatException;
-import windy.task.Deadline;
-import windy.task.Event;
-import windy.task.Task;
-import windy.task.Todo;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Storage {
-    private final Path filepath;
+import windy.exception.InvalidInputFormatException;
+import windy.task.Deadline;
+import windy.task.Event;
+import windy.task.Task;
+import windy.task.Todo;
 
-    public Storage(String filepath) {
-        this.filepath = Path.of(filepath);
+public class Storage {
+    private final Path filePath;
+
+    public Storage(String filePath) {
+        this.filePath = Path.of(filePath);
     }
 
     public List<Task> loadTasks() throws IOException {
         List<Task> tasks = new ArrayList<>();
 
-        if (!Files.exists(this.filepath)) {
+        if (!Files.exists(this.filePath)) {
             return tasks;
         }
 
-        for (String line : Files.readAllLines(this.filepath)) {
-            tasks.add((parseTask(line)));
+        for (String line : Files.readAllLines(this.filePath)) {
+            tasks.add(parseTask(line));
         }
 
         return tasks;
     }
 
     public void saveTasks(List<Task> tasks) throws IOException {
-        Path parent =  this.filepath.getParent();
+        Path parent = this.filePath.getParent();
         if (!Files.exists(parent)) {
             Files.createDirectories(parent);
         }
         List<String> lines = tasks.stream().map(Task::toDataString).toList();
-        Files.write(this.filepath, lines);
+        Files.write(this.filePath, lines);
     }
 
     private Task parseTask(String line) throws IOException {
@@ -56,8 +56,8 @@ public class Storage {
                 case "E" -> new Event(name, isDone, parts[3], parts[4]);
                 default -> throw new IOException("Unknown task type: " + type);
             };
-        }catch (ArrayIndexOutOfBoundsException | InvalidInputFormatException e) {
-            throw new IOException("Invalid task line: " + line, e);
+        } catch (ArrayIndexOutOfBoundsException | InvalidInputFormatException exception) {
+            throw new IOException("Invalid task line: " + line, exception);
         }
     }
 }

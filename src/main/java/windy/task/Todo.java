@@ -7,8 +7,8 @@ import java.time.LocalDate;
  */
 public class Todo extends Task {
 
-    public Todo(String name, boolean done) {
-        super(name, done);
+    public Todo(String name, boolean isDone) {
+        super(name, isDone);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class Todo extends Task {
     }
 
     @Override
-    public boolean isOccur(LocalDate date) {
+    public boolean occursOnDate(LocalDate date) {
         return false;
     }
 }

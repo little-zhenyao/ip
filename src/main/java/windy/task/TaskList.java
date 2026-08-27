@@ -19,29 +19,29 @@ public class TaskList {
         return List.copyOf(tasks);
     }
 
-    public Task deleteTask(int index) {
-        return tasks.remove(index);
+    public Task deleteTask(int taskIndex) {
+        return tasks.remove(taskIndex);
     }
 
-    public int  getNumTasks() {
+    public int getNumTasks() {
         return tasks.size();
     }
 
-    public Task getTask(int num) {
-        return tasks.get(num);
+    public Task getTask(int taskIndex) {
+        return tasks.get(taskIndex);
     }
 
-    public void markTask(int num, boolean mark) {
-        tasks.get(num).setDone(mark);
+    public void markTask(int taskIndex, boolean isMarked) {
+        tasks.get(taskIndex).setDone(isMarked);
     }
 
-    public List<Task> findTaskByDate(LocalDate localDate) {
-        List<Task> tasksFound = new ArrayList<>();
+    public List<Task> findTasksByDate(LocalDate localDate) {
+        List<Task> foundTasks = new ArrayList<>();
         for (Task task : this.tasks) {
-            if (task.isOccur(localDate)) {
-                tasksFound.add(task);
+            if (task.occursOnDate(localDate)) {
+                foundTasks.add(task);
             }
         }
-        return tasksFound;
+        return foundTasks;
     }
 }

@@ -9,14 +9,15 @@ public abstract class Task {
     private final String name;
     private boolean isDone;
 
-    public Task(String name, boolean done) {
+    public Task(String name, boolean isDone) {
         this.name = name;
-        this.isDone = done;
+        this.isDone = isDone;
     }
 
     public String getStatus() {
         return isDone ? "X" : " ";
     }
+
     public boolean isDone() {
         return isDone;
     }
@@ -25,8 +26,8 @@ public abstract class Task {
         return name;
     }
 
-    public void setDone(boolean done) {
-        isDone = done;
+    public void setDone(boolean isDone) {
+        this.isDone = isDone;
     }
 
     /**
@@ -35,5 +36,5 @@ public abstract class Task {
      */
     public abstract String toDataString();
 
-    public abstract boolean isOccur(LocalDate date);
+    public abstract boolean occursOnDate(LocalDate date);
 }

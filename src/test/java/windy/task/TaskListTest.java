@@ -52,9 +52,9 @@ public class TaskListTest {
         TaskList taskList = new TaskList(List.of(
                 matchingDeadline, matchingEvent, nonMatchingEvent, completedDeadline, todo));
 
-        List<Task> tasksFound = taskList.findTaskByDate(searchDate);
+        List<Task> foundTasks = taskList.findTasksByDate(searchDate);
 
-        assertEquals(List.of(matchingDeadline, matchingEvent), tasksFound);
+        assertEquals(List.of(matchingDeadline, matchingEvent), foundTasks);
     }
 
     @Test
@@ -64,8 +64,8 @@ public class TaskListTest {
                 new Event("holiday", false, "2026-9-1", "2026-9-2"),
                 new Todo("buy groceries", false)));
 
-        List<Task> tasksFound = taskList.findTaskByDate(LocalDate.of(2026, 8, 27));
+        List<Task> foundTasks = taskList.findTasksByDate(LocalDate.of(2026, 8, 27));
 
-        assertTrue(tasksFound.isEmpty());
+        assertTrue(foundTasks.isEmpty());
     }
 }
