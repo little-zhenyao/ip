@@ -107,7 +107,7 @@ public class Parser {
             localDate = LocalDate.parse(date,
                     DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT));
         } catch (DateTimeParseException exception) {
-            throw new InvalidInputFormatException("     Invalid date format. Please write like find yyyy-M-d");
+            throw new InvalidInputFormatException("     Invalid date format. Please write like date yyyy-M-d");
         }
         return localDate;
     }
@@ -155,7 +155,12 @@ public class Parser {
             }
             case FIND -> {
                 if (commandLength != 2) {
-                    throw new InvalidInputFormatException("     Invalid format. Please use: find yyyy-M-d");
+                    throw new InvalidInputFormatException("     Invalid format. Please use: find keyword");
+                }
+            }
+            case DATE -> {
+                if (commandLength != 2) {
+                    throw new InvalidInputFormatException("     Invalid format. Please use: date yyyy-M-d");
                 }
             }
             case UNKNOWN -> {

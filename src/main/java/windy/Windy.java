@@ -79,6 +79,9 @@ public class Windy {
                         this.addTask(input, commandType);
                     }
                     case FIND -> {
+                        this.findTasksContainingKeyword(commandParts[1]);
+                    }
+                    case DATE -> {
                         this.findTasksOnDate(commandParts[1]);
                     }
                     case UNKNOWN -> {}
@@ -89,6 +92,16 @@ public class Windy {
 
             ui.showLine();
         }
+    }
+
+    /**
+     * Displays tasks whose descriptions contain the specified keyword.
+     *
+     * @param keyword the keyword to search for
+     */
+    private void findTasksContainingKeyword(String keyword) {
+        List<Task> foundTasks = tasks.findTasksContainingKeyword(keyword);
+        ui.showFoundTasks(foundTasks);
     }
 
     /**

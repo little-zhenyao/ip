@@ -91,4 +91,20 @@ public class TaskList {
         }
         return foundTasks;
     }
+
+    /**
+     * Finds all tasks whose descriptions contain the specified keyword.
+     *
+     * @param keyword the keyword to search for
+     * @return tasks with descriptions that contain the keyword
+     */
+    public List<Task> findTasksContainingKeyword(String keyword) {
+        List<Task> foundTasks = new ArrayList<>();
+        for (Task task : this.tasks) {
+            if (task.containsKeyword(keyword)) {
+                foundTasks.add(task);
+            }
+        }
+        return foundTasks;
+    }
 }

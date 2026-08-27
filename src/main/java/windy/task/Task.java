@@ -57,6 +57,16 @@ public abstract class Task {
     }
 
     /**
+     * Returns whether this task's description contains the specified keyword.
+     *
+     * @param keyword the keyword to search for
+     * @return {@code true} if the task description contains the keyword
+     */
+    public boolean containsKeyword(String keyword) {
+        return name.contains(keyword);
+    }
+
+    /**
      * Converts the task to the format used in the data file.
      *
      * @return the serialized task

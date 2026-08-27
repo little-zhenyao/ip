@@ -23,6 +23,8 @@ public enum CommandType {
     /** Creates a task that spans a date range. */
     EVENT,
     /** Finds incomplete tasks relevant on a date. */
+    DATE,
+    /** Finds tasks whose descriptions contain a keyword. */
     FIND,
     /** Represents an unsupported command word. */
     UNKNOWN;
