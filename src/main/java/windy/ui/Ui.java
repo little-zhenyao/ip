@@ -43,8 +43,9 @@ public class Ui {
     public void showWelcome() {
         showLine();
         showBanner();
-        System.out.println("     Hello! I'm " + NAME + ".");
-        System.out.println("     What can I do for you?");
+        showMessages(
+                "     Hello! I'm " + NAME + ".",
+                "     What can I do for you?");
         showLine();
     }
 
@@ -84,9 +85,10 @@ public class Ui {
      * @param taskCount the number of tasks remaining.
      */
     public void showDeleteTask(Task task, int taskCount) {
-        System.out.println("     Noted. I've removed this task:");
-        System.out.println("       " + task);
-        System.out.println("     Now you have " + taskCount + " tasks in the list.");
+        showMessages(
+                "     Noted. I've removed this task:",
+                "       " + task,
+                "     Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -96,12 +98,13 @@ public class Ui {
      * @param task the updated task.
      */
     public void showMarkTask(boolean isMarked, Task task) {
+        String confirmationMessage;
         if (isMarked) {
-            System.out.println("     Nice! I've marked this task as done:");
+            confirmationMessage = "     Nice! I've marked this task as done:";
         } else {
-            System.out.println("     OK, I've marked this task as not done yet:");
+            confirmationMessage = "     OK, I've marked this task as not done yet:";
         }
-        System.out.println("       " + task);
+        showMessages(confirmationMessage, "       " + task);
     }
 
     /**
@@ -111,9 +114,10 @@ public class Ui {
      * @param taskCount the number of tasks after the addition.
      */
     public void showAddTask(Task task, int taskCount) {
-        System.out.println("     Got it. I've added this task:");
-        System.out.println("       " + task);
-        System.out.println("     Now you have " + taskCount + " tasks in the list.");
+        showMessages(
+                "     Got it. I've added this task:",
+                "       " + task,
+                "     Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -137,6 +141,17 @@ public class Ui {
      */
     public void showLine() {
         System.out.println("    ____________________________________________________________");
+    }
+
+    /**
+     * Displays each supplied message on a separate line.
+     *
+     * @param messages the messages to display.
+     */
+    private void showMessages(String... messages) {
+        for (String message : messages) {
+            System.out.println(message);
+        }
     }
 
     private void showBanner() {
