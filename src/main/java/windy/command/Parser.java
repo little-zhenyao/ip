@@ -20,6 +20,33 @@ public class Parser {
     }
 
     /**
+     * Parses a complete input line into an executable command.
+     *
+     * @param input the complete command entered by the user.
+     * @param taskCount the current number of tasks.
+     * @return the parsed command.
+     * @throws InvalidInputFormatException if the command or its arguments are invalid.
+     */
+    public static Command parseCommand(String input, int taskCount) throws InvalidInputFormatException {
+        String[] commandParts = splitCommand(input);
+        CommandType commandType = parseCommandType(commandParts[0]);
+        parseInvalidCommand(commandType, commandParts.length);
+
+        return switch (commandType) {
+            case BYE -> new ByeCommand();
+            case LIST -> new ListCommand();
+            case MARK -> new MarkCommand(parseTaskNumber(commandParts[1], taskCount));
+            case UNMARK -> new UnmarkCommand(parseTaskNumber(commandParts[1], taskCount));
+            case DELETE -> new DeleteCommand(parseTaskNumber(commandParts[1], taskCount));
+            case TODO, DEADLINE, EVENT -> new AddTaskCommand(parseNewTask(input, commandType));
+            case FIND -> new FindCommand(commandParts[1]);
+            case DATE -> new DateCommand(parseDate(commandParts[1]));
+            case UNKNOWN -> throw new InvalidInputFormatException(
+                    "     Invalid command, please try another one");
+        };
+    }
+
+    /**
      * Creates a task from the details supplied with a task-creation command.
      *
      * @param input the complete command entered by the user.
@@ -166,7 +193,8 @@ public class Parser {
             case UNKNOWN -> {
                 throw new InvalidInputFormatException("     Invalid command, please try another one");
             }
-            default -> {}
+            default -> {
+            }
         }
     }
 }

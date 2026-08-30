@@ -13,10 +13,10 @@ import windy.exception.InvalidInputFormatException;
  */
 public class Deadline extends Task {
 
-    private static final DateTimeFormatter INPUT_FORMATTER
-            = DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT);
-    private static final DateTimeFormatter OUTPUT_FORMATTER
-            = DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH);
+    private static final DateTimeFormatter INPUT_FORMATTER =
+            DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter OUTPUT_FORMATTER =
+            DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH);
     private final LocalDate deadline;
 
     /**

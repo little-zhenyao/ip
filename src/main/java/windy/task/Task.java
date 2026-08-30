@@ -1,6 +1,7 @@
 package windy.task;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
 /**
  * Represents a task with a name and a completion status.
@@ -63,7 +64,9 @@ public abstract class Task {
      * @return {@code true} if the task description contains the keyword.
      */
     public boolean containsKeyword(String keyword) {
-        return name.contains(keyword);
+        String normalizedName = name.toLowerCase(Locale.ROOT);
+        String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
+        return normalizedName.contains(normalizedKeyword);
     }
 
     /**

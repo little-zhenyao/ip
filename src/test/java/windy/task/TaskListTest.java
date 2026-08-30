@@ -68,4 +68,15 @@ public class TaskListTest {
 
         assertTrue(foundTasks.isEmpty());
     }
+
+    @Test
+    public void findTasksContainingKeyword_differentLetterCase_returnsMatchingTasks() {
+        Todo matchingTodo = new Todo("Read BOOK", false);
+        Todo nonMatchingTodo = new Todo("buy groceries", false);
+        TaskList taskList = new TaskList(List.of(matchingTodo, nonMatchingTodo));
+
+        List<Task> foundTasks = taskList.findTasksContainingKeyword("book");
+
+        assertEquals(List.of(matchingTodo), foundTasks);
+    }
 }
