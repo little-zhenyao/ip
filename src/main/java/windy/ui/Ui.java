@@ -1,5 +1,7 @@
 package windy.ui;
 
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,12 +13,27 @@ import windy.task.Task;
 public class Ui {
     private static final String NAME = "Windy";
     private final Scanner scanner;
+    private final PrintStream output;
 
     /**
      * Creates a user interface that reads commands from standard input.
      */
     public Ui() {
-        this.scanner = new Scanner(System.in);
+        this(new Scanner(System.in), System.out);
+    }
+
+    /**
+     * Creates an output-only user interface that writes to the specified stream.
+     *
+     * @param output stream that receives application messages.
+     */
+    public Ui(PrintStream output) {
+        this(new Scanner(InputStream.nullInputStream()), output);
+    }
+
+    private Ui(Scanner scanner, PrintStream output) {
+        this.scanner = scanner;
+        this.output = output;
     }
 
     /**
@@ -53,7 +70,7 @@ public class Ui {
      * Displays the farewell message.
      */
     public void showBye() {
-        System.out.println("     Bye. Hope to see you again soon!");
+        output.println("     Bye. Hope to see you again soon!");
         showLine();
     }
 
@@ -63,7 +80,7 @@ public class Ui {
      * @param message the message to display.
      */
     public void showError(String message) {
-        System.out.println(message);
+        output.println(message);
     }
 
     /**
@@ -72,9 +89,9 @@ public class Ui {
      * @param tasks the tasks to display.
      */
     public void showTaskList(List<Task> tasks) {
-        System.out.println("     Here are the tasks in your list:");
+        output.println("     Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println("     " + (i + 1) + "." + tasks.get(i));
+            output.println("     " + (i + 1) + "." + tasks.get(i));
         }
     }
 
@@ -127,12 +144,12 @@ public class Ui {
      */
     public void showFoundTasks(List<Task> tasks) {
         if (tasks.isEmpty()) {
-            System.out.println("     No such task found");
+            output.println("     No such task found");
             return;
         }
-        System.out.println("     There are " + tasks.size() + " tasks that meet the requirements:");
+        output.println("     There are " + tasks.size() + " tasks that meet the requirements:");
         for (Task task : tasks) {
-            System.out.println("     " + task);
+            output.println("     " + task);
         }
     }
 
@@ -140,7 +157,7 @@ public class Ui {
      * Displays the horizontal separator used between command responses.
      */
     public void showLine() {
-        System.out.println("    ____________________________________________________________");
+        output.println("    ______________________________________________");
     }
 
     /**
@@ -150,7 +167,7 @@ public class Ui {
      */
     private void showMessages(String... messages) {
         for (String message : messages) {
-            System.out.println(message);
+            output.println(message);
         }
     }
 
@@ -161,6 +178,6 @@ public class Ui {
                 + "       \\ V  V / | | | | | (_| | |_| |\n"
                 + "        \\_/\\_/  |_|_| |_|\\__,_|\\__, |\n"
                 + "                               |___/ \n";
-        System.out.print(banner);
+        output.print(banner);
     }
 }
