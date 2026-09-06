@@ -12,14 +12,20 @@ import windy.task.Task;
  */
 public class Ui {
     private static final String NAME = "Windy";
+    private static final String CONSOLE_CONTENT_INDENTATION = "     ";
+    private static final String CONSOLE_SEPARATOR_INDENTATION = "    ";
+
     private final Scanner scanner;
     private final PrintStream output;
+    private final String contentIndentation;
+    private final String separatorIndentation;
 
     /**
      * Creates a user interface that reads commands from standard input.
      */
     public Ui() {
-        this(new Scanner(System.in), System.out);
+        this(new Scanner(System.in), System.out,
+                CONSOLE_CONTENT_INDENTATION, CONSOLE_SEPARATOR_INDENTATION);
     }
 
     /**
@@ -28,12 +34,26 @@ public class Ui {
      * @param output stream that receives application messages.
      */
     public Ui(PrintStream output) {
-        this(new Scanner(InputStream.nullInputStream()), output);
+        this(new Scanner(InputStream.nullInputStream()), output,
+                CONSOLE_CONTENT_INDENTATION, CONSOLE_SEPARATOR_INDENTATION);
     }
 
-    private Ui(Scanner scanner, PrintStream output) {
+    private Ui(Scanner scanner, PrintStream output,
+            String contentIndentation, String separatorIndentation) {
         this.scanner = scanner;
         this.output = output;
+        this.contentIndentation = contentIndentation;
+        this.separatorIndentation = separatorIndentation;
+    }
+
+    /**
+     * Creates an output-only UI whose messages are formatted for a dialog box.
+     *
+     * @param output stream that receives application messages.
+     * @return a UI without console-only indentation.
+     */
+    public static Ui createDialogUi(PrintStream output) {
+        return new Ui(new Scanner(InputStream.nullInputStream()), output, "", "");
     }
 
     /**
@@ -61,8 +81,8 @@ public class Ui {
         showLine();
         showBanner();
         showMessages(
-                "     Hello! I'm " + NAME + ".",
-                "     What can I do for you?");
+                "Hello! I'm " + NAME + ".",
+                "What can I do for you?");
         showLine();
     }
 
@@ -70,7 +90,7 @@ public class Ui {
      * Displays the farewell message.
      */
     public void showBye() {
-        output.println("     Bye. Hope to see you again soon!");
+        showMessages("Bye. Hope to see you again soon!");
         showLine();
     }
 
@@ -80,7 +100,7 @@ public class Ui {
      * @param message the message to display.
      */
     public void showError(String message) {
-        output.println(message);
+        showMessages(message);
     }
 
     /**
@@ -89,9 +109,9 @@ public class Ui {
      * @param tasks the tasks to display.
      */
     public void showTaskList(List<Task> tasks) {
-        output.println("     Here are the tasks in your list:");
+        showMessages("Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
-            output.println("     " + (i + 1) + "." + tasks.get(i));
+            showMessages((i + 1) + "." + tasks.get(i));
         }
     }
 
@@ -103,25 +123,31 @@ public class Ui {
      */
     public void showDeleteTask(Task task, int taskCount) {
         showMessages(
-                "     Noted. I've removed this task:",
-                "       " + task,
-                "     Now you have " + taskCount + " tasks in the list.");
+                "Noted. I've removed this task:",
+                "  " + task,
+                "Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
-     * Displays confirmation of a task's updated completion status.
+     * Displays confirmation that a task was marked as completed.
      *
-     * @param isMarked {@code true} if the task was marked done; {@code false} otherwise.
      * @param task the updated task.
      */
-    public void showMarkTask(boolean isMarked, Task task) {
-        String confirmationMessage;
-        if (isMarked) {
-            confirmationMessage = "     Nice! I've marked this task as done:";
-        } else {
-            confirmationMessage = "     OK, I've marked this task as not done yet:";
-        }
-        showMessages(confirmationMessage, "       " + task);
+    public void showTaskMarkedDone(Task task) {
+        showTaskCompletionUpdate("Nice! I've marked this task as done:", task);
+    }
+
+    /**
+     * Displays confirmation that a task was marked as not completed.
+     *
+     * @param task the updated task.
+     */
+    public void showTaskMarkedNotDone(Task task) {
+        showTaskCompletionUpdate("OK, I've marked this task as not done yet:", task);
+    }
+
+    private void showTaskCompletionUpdate(String confirmationMessage, Task task) {
+        showMessages(confirmationMessage, "  " + task);
     }
 
     /**
@@ -132,9 +158,9 @@ public class Ui {
      */
     public void showAddTask(Task task, int taskCount) {
         showMessages(
-                "     Got it. I've added this task:",
-                "       " + task,
-                "     Now you have " + taskCount + " tasks in the list.");
+                "Got it. I've added this task:",
+                "  " + task,
+                "Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -144,12 +170,12 @@ public class Ui {
      */
     public void showFoundTasks(List<Task> tasks) {
         if (tasks.isEmpty()) {
-            output.println("     No such task found");
+            showMessages("No such task found");
             return;
         }
-        output.println("     There are " + tasks.size() + " tasks that meet the requirements:");
+        showMessages("There are " + tasks.size() + " tasks that meet the requirements:");
         for (Task task : tasks) {
-            output.println("     " + task);
+            showMessages(task.toString());
         }
     }
 
@@ -157,7 +183,7 @@ public class Ui {
      * Displays the horizontal separator used between command responses.
      */
     public void showLine() {
-        output.println("    ______________________________________________");
+        output.println(separatorIndentation + "______________________________________________");
     }
 
     /**
@@ -167,17 +193,17 @@ public class Ui {
      */
     private void showMessages(String... messages) {
         for (String message : messages) {
-            output.println(message);
+            output.println(contentIndentation + message);
         }
     }
 
     private void showBanner() {
-        String banner = "     __        ___           _       \n"
-                + "     \\ \\      / (_)_ __   __| |_   _ \n"
-                + "      \\ \\ /\\ / /| | '_ \\ / _` | | | |\n"
-                + "       \\ V  V / | | | | | (_| | |_| |\n"
-                + "        \\_/\\_/  |_|_| |_|\\__,_|\\__, |\n"
-                + "                               |___/ \n";
+        String banner = contentIndentation + "__        ___           _       \n"
+                + contentIndentation + "\\ \\      / (_)_ __   __| |_   _ \n"
+                + contentIndentation + " \\ \\ /\\ / /| | '_ \\ / _` | | | |\n"
+                + contentIndentation + "  \\ V  V / | | | | | (_| | |_| |\n"
+                + contentIndentation + "   \\_/\\_/  |_|_| |_|\\__,_|\\__, |\n"
+                + contentIndentation + "                          |___/ \n";
         output.print(banner);
     }
 }

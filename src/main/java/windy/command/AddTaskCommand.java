@@ -1,9 +1,7 @@
 package windy.command;
 
-import windy.storage.Storage;
 import windy.task.Task;
 import windy.task.TaskList;
-import windy.ui.Ui;
 
 /**
  * Adds a task to the task list.
@@ -22,9 +20,10 @@ public class AddTaskCommand extends Command {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public void execute(CommandContext context) {
+        TaskList tasks = context.getTasks();
         tasks.addTask(task);
-        saveTasks(tasks, ui, storage);
-        ui.showAddTask(task, tasks.getNumTasks());
+        context.saveTasks();
+        context.getUi().showAddTask(task, tasks.getNumTasks());
     }
 }

@@ -7,9 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import windy.command.Command;
+import windy.command.CommandContext;
 import windy.command.Parser;
 import windy.exception.InvalidInputFormatException;
 import windy.storage.Storage;
@@ -48,7 +48,7 @@ public class Windy {
         try {
             loadedTasks = storage.loadTasks();
         } catch (IOException exception) {
-            ui.showError("     Unable to load saved tasks: " + exception.getMessage());
+            ui.showError("Unable to load saved tasks: " + exception.getMessage());
             loadedTasks = new ArrayList<>();
         }
         tasks = new TaskList(loadedTasks);
@@ -74,20 +74,20 @@ public class Windy {
         ByteArrayOutputStream responseBytes = new ByteArrayOutputStream();
         try (PrintStream responseOutput = new PrintStream(
                 responseBytes, true, StandardCharsets.UTF_8)) {
-            Ui responseUi = new Ui(responseOutput);
+            Ui responseUi = Ui.createDialogUi(responseOutput);
             try {
                 Command command = Parser.parseCommand(input.trim(), tasks.getNumTasks());
-                if (command.isExit()) {
-                    isExitRequested = true;
+                CommandContext context = new CommandContext(tasks, responseUi, storage);
+                command.execute(context);
+                isExitRequested = context.isExitRequested();
+                if (isExitRequested) {
                     responseUi.showBye();
-                } else {
-                    command.execute(tasks, responseUi, storage);
                 }
             } catch (InvalidInputFormatException exception) {
                 responseUi.showError(exception.getMessage());
             }
         }
-        return removeConsoleIndentation(responseBytes.toString(StandardCharsets.UTF_8));
+        return responseBytes.toString(StandardCharsets.UTF_8).stripTrailing();
     }
 
     /**
@@ -109,29 +109,9 @@ public class Windy {
         ByteArrayOutputStream responseBytes = new ByteArrayOutputStream();
         try (PrintStream responseOutput = new PrintStream(
                 responseBytes, true, StandardCharsets.UTF_8)) {
-            displayAction.accept(new Ui(responseOutput));
+            displayAction.accept(Ui.createDialogUi(responseOutput));
         }
-        return removeConsoleIndentation(responseBytes.toString(StandardCharsets.UTF_8));
-    }
-
-    /**
-     * Removes console-only indentation while retaining relative indentation within a response.
-     *
-     * @param response response formatted for the console.
-     * @return response formatted for a dialog box.
-     */
-    private String removeConsoleIndentation(String response) {
-        return response.lines()
-                .map(line -> {
-                    if (line.startsWith("     ")) {
-                        return line.substring(5);
-                    }
-                    if (line.startsWith("    ")) {
-                        return line.substring(4);
-                    }
-                    return line;
-                })
-                .collect(Collectors.joining("\n"));
+        return responseBytes.toString(StandardCharsets.UTF_8).stripTrailing();
     }
 
     /**
@@ -145,10 +125,11 @@ public class Windy {
             ui.showLine();
             try {
                 Command command = Parser.parseCommand(input, tasks.getNumTasks());
-                if (command.isExit()) {
+                CommandContext context = new CommandContext(tasks, ui, storage);
+                command.execute(context);
+                if (context.isExitRequested()) {
                     break commandLoop;
                 }
-                command.execute(tasks, ui, storage);
             } catch (InvalidInputFormatException exception) {
                 ui.showError(exception.getMessage());
             }
