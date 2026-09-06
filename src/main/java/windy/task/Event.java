@@ -27,7 +27,7 @@ public class Event extends Task {
      * @param isDone whether the task has been completed
      * @param startDate the first date of the event, in {@code yyyy-M-d} format
      * @param endDate the last date of the event, in {@code yyyy-M-d} format
-     * @throws InvalidInputFormatException if either date is invalid
+     * @throws InvalidInputFormatException if either date is invalid or the end precedes the start.
      */
     public Event(String name, boolean isDone, String startDate, String endDate)
             throws InvalidInputFormatException {
@@ -38,6 +38,9 @@ public class Event extends Task {
         } catch (DateTimeParseException exception) {
             throw new InvalidInputFormatException(
                     "     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
+        }
+        if (this.endDate.isBefore(this.startDate)) {
+            throw new InvalidInputFormatException("     The event end date cannot be before its start date");
         }
     }
 
