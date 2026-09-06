@@ -56,4 +56,9 @@ public class ParserTest {
     public void parseTaskNumber_emptyTaskList_throwsInvalidInputFormatException() {
         assertThrows(InvalidInputFormatException.class, () -> Parser.parseTaskNumber("1", 0));
     }
+
+    @Test
+    public void parseNewTask_nonTaskCommand_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> Parser.parseNewTask("list", CommandType.LIST));
+    }
 }

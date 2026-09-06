@@ -40,6 +40,10 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void initialize() {
+        assert scrollPane != null : "Scroll pane should be injected by FXML";
+        assert dialogContainer != null : "Dialog container should be injected by FXML";
+        assert userInput != null : "User input should be injected by FXML";
+        assert sendButton != null : "Send button should be injected by FXML";
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
@@ -59,6 +63,7 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
+        assert windy != null : "Windy should be set before handling input";
         String input = userInput.getText().trim();
         if (input.isEmpty()) {
             return;

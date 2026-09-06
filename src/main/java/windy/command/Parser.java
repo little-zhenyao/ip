@@ -55,6 +55,11 @@ public class Parser {
      * @throws InvalidInputFormatException if required task details are missing or malformed.
      */
     public static Task parseNewTask(String input, CommandType commandType) throws InvalidInputFormatException {
+        assert commandType == CommandType.TODO
+                || commandType == CommandType.DEADLINE
+                || commandType == CommandType.EVENT
+                : "Command type should represent a task-creation command";
+
         String[] commandParts = input.split("\\s+");
         if (commandParts.length == 1) {
             throw new InvalidInputFormatException("     The description of task cannot be empty");
@@ -118,6 +123,8 @@ public class Parser {
                         + "please try the number between 1 and " + taskCount + ".");
             }
         }
+        assert taskIndex >= 0 && taskIndex < taskCount
+                : "Parsed task index should be within the task list";
         return taskIndex;
     }
 
