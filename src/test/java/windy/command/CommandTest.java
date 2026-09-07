@@ -2,6 +2,7 @@ package windy.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
@@ -61,6 +62,19 @@ public class CommandTest {
         new ByeCommand().execute(context);
 
         assertTrue(context.isExitRequested());
+    }
+
+    @Test
+    public void execute_invalidTaskIndexes_throwAssertionError() {
+        TaskList tasks = new TaskList(new ArrayList<>());
+        Storage storage = createStorage();
+        Ui ui = new Ui();
+
+        CommandContext context = new CommandContext(tasks, ui, storage);
+
+        assertThrows(AssertionError.class, () -> new MarkCommand(0).execute(context));
+        assertThrows(AssertionError.class, () -> new UnmarkCommand(0).execute(context));
+        assertThrows(AssertionError.class, () -> new DeleteCommand(0).execute(context));
     }
 
     private Storage createStorage() {

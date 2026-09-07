@@ -24,6 +24,8 @@ abstract class TaskCompletionCommand extends Command {
     @Override
     public final void execute(CommandContext context) {
         TaskList tasks = context.getTasks();
+        assert taskIndex >= 0 && taskIndex < tasks.getNumTasks()
+                : "Task index should have been validated by Parser";
         if (shouldMarkDone) {
             tasks.markTaskAsDone(taskIndex);
         } else {

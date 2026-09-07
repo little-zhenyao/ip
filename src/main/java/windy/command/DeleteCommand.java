@@ -22,6 +22,8 @@ public class DeleteCommand extends Command {
     @Override
     public void execute(CommandContext context) {
         TaskList tasks = context.getTasks();
+        assert taskIndex >= 0 && taskIndex < tasks.getNumTasks()
+                : "Task index should have been validated by Parser";
         Task deletedTask = tasks.deleteTask(taskIndex);
         context.getUi().showDeleteTask(deletedTask, tasks.getNumTasks());
         context.saveTasks();
