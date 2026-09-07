@@ -4,20 +4,20 @@ import java.time.LocalDate;
 import java.util.Locale;
 
 /**
- * Represents a task with a name and a completion status.
+ * Represents a task with a description and a completion status.
  */
 public abstract class Task {
-    private final String name;
+    private final String description;
     private boolean isDone;
 
     /**
      * Creates a task with the given description and completion status.
      *
-     * @param name the task description.
+     * @param description the task description.
      * @param isDone whether the task has been completed.
      */
-    public Task(String name, boolean isDone) {
-        this.name = name;
+    public Task(String description, boolean isDone) {
+        this.description = description;
         this.isDone = isDone;
     }
 
@@ -26,7 +26,7 @@ public abstract class Task {
      *
      * @return {@code X} if the task is done, or a space otherwise.
      */
-    public String getStatus() {
+    public String getStatusIcon() {
         return isDone ? "X" : " ";
     }
 
@@ -44,8 +44,8 @@ public abstract class Task {
      *
      * @return the task description.
      */
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
     /**
@@ -64,9 +64,9 @@ public abstract class Task {
      * @return {@code true} if the task description contains the keyword.
      */
     public boolean containsKeyword(String keyword) {
-        String normalizedName = name.toLowerCase(Locale.ROOT);
+        String normalizedDescription = description.toLowerCase(Locale.ROOT);
         String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
-        return normalizedName.contains(normalizedKeyword);
+        return normalizedDescription.contains(normalizedKeyword);
     }
 
     /**
@@ -78,9 +78,12 @@ public abstract class Task {
 
     /**
      * Checks whether this incomplete task is relevant on the specified date.
+     * Tasks without an associated date are not relevant on any date by default.
      *
      * @param date the date to check.
      * @return {@code true} if the task occurs on the date and is not completed.
      */
-    public abstract boolean occursOnDate(LocalDate date);
+    public boolean occursOnDate(LocalDate date) {
+        return false;
+    }
 }

@@ -2,10 +2,7 @@ package windy.command;
 
 import java.util.List;
 
-import windy.storage.Storage;
 import windy.task.Task;
-import windy.task.TaskList;
-import windy.ui.Ui;
 
 /**
  * Displays tasks whose descriptions contain a keyword.
@@ -24,8 +21,8 @@ public class FindCommand extends Command {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
-        List<Task> foundTasks = tasks.findTasksContainingKeyword(keyword);
-        ui.showFoundTasks(foundTasks);
+    public void execute(CommandContext context) {
+        List<Task> foundTasks = context.getTasks().findTasksContainingKeyword(keyword);
+        context.getUi().showFoundTasks(foundTasks);
     }
 }

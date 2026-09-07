@@ -1,14 +1,9 @@
 package windy.command;
 
-import windy.storage.Storage;
-import windy.task.TaskList;
-import windy.ui.Ui;
-
 /**
  * Marks a task as not completed.
  */
-public class UnmarkCommand extends Command {
-    private final int taskIndex;
+public class UnmarkCommand extends TaskCompletionCommand {
 
     /**
      * Creates a command that unmarks the task at the specified index.
@@ -16,16 +11,6 @@ public class UnmarkCommand extends Command {
      * @param taskIndex the zero-based index of the task to unmark.
      */
     public UnmarkCommand(int taskIndex) {
-        this.taskIndex = taskIndex;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
-        assert taskIndex >= 0 && taskIndex < tasks.getNumTasks()
-                : "Task index should have been validated by Parser";
-        tasks.markTask(taskIndex, false);
-        saveTasks(tasks, ui, storage);
-        ui.showMarkTask(false, tasks.getTask(taskIndex));
+        super(taskIndex, false);
     }
 }

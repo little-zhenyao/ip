@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import windy.exception.InvalidInputFormatException;
+import windy.storage.TaskDataFormat.TaskType;
 import windy.task.Deadline;
 import windy.task.Event;
 import windy.task.Task;
@@ -40,8 +41,9 @@ public class Storage {
             return tasks;
         }
 
-        for (String line : Files.readAllLines(this.filePath)) {
-            tasks.add(parseTask(line));
+        List<String> lines = Files.readAllLines(this.filePath);
+        for (int i = 0; i < lines.size(); i++) {
+            tasks.add(parseTask(lines.get(i), i + 1));
         }
 
         return tasks;
@@ -66,25 +68,54 @@ public class Storage {
      * Converts one stored record into its corresponding task object.
      *
      * @param line a line from the data file
+     * @param lineNumber the one-based position of the line in the data file
      * @return the task represented by the line
      * @throws IOException if the record is incomplete or contains invalid data
      */
-    private Task parseTask(String line) throws IOException {
-        String[] parts = line.split("\\s*\\|\\s*", -1);
+    private Task parseTask(String line, int lineNumber) throws IOException {
+        String[] recordFields = TaskDataFormat.splitRecord(line);
+        TaskType taskType = parseTaskType(recordFields[0], lineNumber);
+        int expectedFieldCount = taskType.getFieldCount();
+        if (recordFields.length != expectedFieldCount) {
+            throw createInvalidRecordException(lineNumber,
+                    "expected " + expectedFieldCount + " fields but found " + recordFields.length);
+        }
+
+        boolean isDone = parseCompletionStatus(recordFields[1], lineNumber);
+        String taskDescription = recordFields[2];
 
         try {
-            String type = parts[0];
-            boolean isDone = parts[1].equals("1");
-            String name = parts[2];
-
-            return switch (type) {
-                case "T" -> new Todo(name, isDone);
-                case "D" -> new Deadline(name, isDone, parts[3]);
-                case "E" -> new Event(name, isDone, parts[3], parts[4]);
-                default -> throw new IOException("Unknown task type: " + type);
+            return switch (taskType) {
+                case TODO -> new Todo(taskDescription, isDone);
+                case DEADLINE -> new Deadline(taskDescription, isDone, recordFields[3]);
+                case EVENT -> new Event(taskDescription, isDone, recordFields[3], recordFields[4]);
             };
-        } catch (ArrayIndexOutOfBoundsException | InvalidInputFormatException exception) {
-            throw new IOException("Invalid task line: " + line, exception);
+        } catch (InvalidInputFormatException exception) {
+            throw createInvalidRecordException(lineNumber, "invalid task data", exception);
         }
+    }
+
+    private TaskType parseTaskType(String typeCode, int lineNumber) throws IOException {
+        try {
+            return TaskType.fromCode(typeCode);
+        } catch (IllegalArgumentException exception) {
+            throw createInvalidRecordException(lineNumber, exception.getMessage());
+        }
+    }
+
+    private boolean parseCompletionStatus(String status, int lineNumber) throws IOException {
+        try {
+            return TaskDataFormat.parseCompletionStatus(status);
+        } catch (IllegalArgumentException exception) {
+            throw createInvalidRecordException(lineNumber, exception.getMessage());
+        }
+    }
+
+    private IOException createInvalidRecordException(int lineNumber, String reason) {
+        return new IOException("Invalid task record at line " + lineNumber + ": " + reason);
+    }
+
+    private IOException createInvalidRecordException(int lineNumber, String reason, Exception cause) {
+        return new IOException("Invalid task record at line " + lineNumber + ": " + reason, cause);
     }
 }
