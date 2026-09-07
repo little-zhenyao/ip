@@ -3,18 +3,19 @@ package windy.task;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
 import java.util.Locale;
 
 import windy.exception.InvalidInputFormatException;
+import windy.storage.TaskDataFormat;
+import windy.storage.TaskDataFormat.TaskType;
 
 /**
  * Represents a task that occurs between a start and an end date or time.
  */
 public class Event extends Task {
 
-    private static final DateTimeFormatter INPUT_FORMATTER =
-            DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT);
+    private static final String INVALID_DATE_RANGE_MESSAGE =
+            "The event end date cannot be before its start date";
     private static final DateTimeFormatter OUTPUT_FORMATTER =
             DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH);
     private final LocalDate startDate;
@@ -23,31 +24,38 @@ public class Event extends Task {
     /**
      * Creates a task that occurs over a date range.
      *
-     * @param name the task description
+     * @param description the task description
      * @param isDone whether the task has been completed
      * @param startDate the first date of the event, in {@code yyyy-M-d} format
      * @param endDate the last date of the event, in {@code yyyy-M-d} format
-     * @throws InvalidInputFormatException if either date is invalid or the end precedes the start.
+     * @throws InvalidInputFormatException if either date is invalid or the end date
+     *     precedes the start date
      */
-    public Event(String name, boolean isDone, String startDate, String endDate)
+    public Event(String description, boolean isDone, String startDate, String endDate)
             throws InvalidInputFormatException {
-        super(name, isDone);
+        super(description, isDone);
+
+        LocalDate parsedStartDate;
+        LocalDate parsedEndDate;
         try {
-            this.startDate = LocalDate.parse(startDate, INPUT_FORMATTER);
-            this.endDate = LocalDate.parse(endDate, INPUT_FORMATTER);
+            parsedStartDate = TaskDateParser.parse(startDate);
+            parsedEndDate = TaskDateParser.parse(endDate);
         } catch (DateTimeParseException exception) {
-            throw new InvalidInputFormatException(
-                    "     The format of event is wrong. Please use description /from yyyy-M-d /to yyyy-M-d");
+            throw new InvalidInputFormatException(TaskDateParser.EVENT_FORMAT_ERROR_MESSAGE);
         }
-        if (this.endDate.isBefore(this.startDate)) {
-            throw new InvalidInputFormatException("     The event end date cannot be before its start date");
+
+        if (parsedEndDate.isBefore(parsedStartDate)) {
+            throw new InvalidInputFormatException(INVALID_DATE_RANGE_MESSAGE);
         }
+
+        this.startDate = parsedStartDate;
+        this.endDate = parsedEndDate;
     }
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "[E][" + this.getStatus() + "] " + this.getName()
+        return "[E][" + this.getStatusIcon() + "] " + this.getDescription()
                 + " (from: " + this.startDate.format(OUTPUT_FORMATTER)
                 + " to: " + this.endDate.format(OUTPUT_FORMATTER) + ")";
     }
@@ -55,8 +63,8 @@ public class Event extends Task {
     /** {@inheritDoc} */
     @Override
     public String toDataString() {
-        return "E | " + (this.isDone() ? "1" : "0") + " | " + this.getName()
-                + " | " + this.startDate + " | " + this.endDate;
+        return TaskDataFormat.formatRecord(TaskType.EVENT, this.isDone(), this.getDescription(),
+                this.startDate.toString(), this.endDate.toString());
     }
 
     /** {@inheritDoc} */

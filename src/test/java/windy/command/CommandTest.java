@@ -27,9 +27,9 @@ public class CommandTest {
             throws Exception {
         TaskList tasks = new TaskList(new ArrayList<>());
         Storage storage = createStorage();
+        CommandContext context = new CommandContext(tasks, new Ui(), storage);
 
-        new AddTaskCommand(new Todo("read book", false))
-                .execute(tasks, new Ui(), storage);
+        new AddTaskCommand(new Todo("read book", false)).execute(context);
 
         assertEquals(1, tasks.getNumTasks());
         assertEquals(List.of("T | 0 | read book"),
@@ -42,21 +42,26 @@ public class CommandTest {
         TaskList tasks = new TaskList(new ArrayList<>(List.of(todo)));
         Storage storage = createStorage();
         Ui ui = new Ui();
+        CommandContext context = new CommandContext(tasks, ui, storage);
 
-        new MarkCommand(0).execute(tasks, ui, storage);
+        new MarkCommand(0).execute(context);
         assertTrue(todo.isDone());
 
-        new UnmarkCommand(0).execute(tasks, ui, storage);
+        new UnmarkCommand(0).execute(context);
         assertFalse(todo.isDone());
 
-        new DeleteCommand(0).execute(tasks, ui, storage);
+        new DeleteCommand(0).execute(context);
         assertEquals(0, tasks.getNumTasks());
     }
 
     @Test
-    public void isExit_byeCommand_returnsTrue() {
-        assertTrue(new ByeCommand().isExit());
-        assertFalse(new ListCommand().isExit());
+    public void execute_byeCommand_requestsExit() {
+        TaskList tasks = new TaskList(new ArrayList<>());
+        CommandContext context = new CommandContext(tasks, new Ui(), createStorage());
+
+        new ByeCommand().execute(context);
+
+        assertTrue(context.isExitRequested());
     }
 
     @Test
@@ -65,9 +70,11 @@ public class CommandTest {
         Storage storage = createStorage();
         Ui ui = new Ui();
 
-        assertThrows(AssertionError.class, () -> new MarkCommand(0).execute(tasks, ui, storage));
-        assertThrows(AssertionError.class, () -> new UnmarkCommand(0).execute(tasks, ui, storage));
-        assertThrows(AssertionError.class, () -> new DeleteCommand(0).execute(tasks, ui, storage));
+        CommandContext context = new CommandContext(tasks, ui, storage);
+
+        assertThrows(AssertionError.class, () -> new MarkCommand(0).execute(context));
+        assertThrows(AssertionError.class, () -> new UnmarkCommand(0).execute(context));
+        assertThrows(AssertionError.class, () -> new DeleteCommand(0).execute(context));
     }
 
     private Storage createStorage() {
