@@ -2,6 +2,30 @@
 
 This is a project template for a greenfield Java project. This is a project template for a greenfield Java project named _Windy_. Given below are instructions on how to use it.
 
+## Continuous integration
+
+The [CI workflow](.github/workflows/ci.yml) runs on every push and pull request,
+and can also be started manually from GitHub's **Actions** tab once the workflow
+is on the default branch. It uses Java 25 to compile, run JUnit tests, check
+production and test code with Checkstyle, and build the distributions on Linux,
+Windows, and macOS. Console UI test plans and interactive GUI tests are not run by CI.
+
+To run the same checks locally, select JDK 25 and run:
+
+```bash
+# Linux and macOS
+./gradlew --no-daemon build
+```
+
+```powershell
+# Windows (PowerShell)
+.\gradlew.bat --no-daemon build
+```
+
+In the repository's **Actions** tab, open **CI**, select a run, and select a
+platform's job to see its results. If a job fails, expand the failed step to
+read the error log. All three platform jobs must pass to verify the CI build.
+
 ## Setting up in Intellij
 
 Prerequisites: JDK 25, update Intellij to the most recent version.
