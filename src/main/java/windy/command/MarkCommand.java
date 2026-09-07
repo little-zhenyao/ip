@@ -22,6 +22,8 @@ public class MarkCommand extends Command {
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
+        assert taskIndex >= 0 && taskIndex < tasks.getNumTasks()
+                : "Task index should have been validated by Parser";
         tasks.markTask(taskIndex, true);
         saveTasks(tasks, ui, storage);
         ui.showMarkTask(true, tasks.getTask(taskIndex));
