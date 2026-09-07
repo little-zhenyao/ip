@@ -3,6 +3,7 @@ package windy.task;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages the application's collection of tasks.
@@ -91,13 +92,9 @@ public class TaskList {
      * @return tasks that occur on the date.
      */
     public List<Task> findTasksByDate(LocalDate localDate) {
-        List<Task> foundTasks = new ArrayList<>();
-        for (Task task : this.tasks) {
-            if (task.occursOnDate(localDate)) {
-                foundTasks.add(task);
-            }
-        }
-        return foundTasks;
+        return tasks.stream()
+                .filter(task -> task.occursOnDate(localDate))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -107,12 +104,8 @@ public class TaskList {
      * @return tasks with descriptions that contain the keyword.
      */
     public List<Task> findTasksContainingKeyword(String keyword) {
-        List<Task> foundTasks = new ArrayList<>();
-        for (Task task : this.tasks) {
-            if (task.containsKeyword(keyword)) {
-                foundTasks.add(task);
-            }
-        }
-        return foundTasks;
+        return tasks.stream()
+                .filter(task -> task.containsKeyword(keyword))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
