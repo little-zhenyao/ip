@@ -9,6 +9,9 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+/**
+ * Tests command responses exposed by Windy to the GUI.
+ */
 public class WindyTest {
 
     @TempDir
@@ -32,11 +35,13 @@ public class WindyTest {
         String addResponse = windy.getResponse("todo read book");
         String listResponse = windy.getResponse("list");
 
-        assertEquals("Got it. I've added this task:\n"
-                + "  [T][ ] read book\n"
-                + "Now you have 1 tasks in the list.", addResponse);
-        assertEquals("Here are the tasks in your list:\n"
-                + "1.[T][ ] read book", listResponse);
+        assertEquals(String.join(System.lineSeparator(),
+                "Got it. I've added this task:",
+                "  [T][ ] read book",
+                "Now you have 1 tasks in the list."), addResponse);
+        assertEquals(String.join(System.lineSeparator(),
+                "Here are the tasks in your list:",
+                "1.[T][ ] read book"), listResponse);
     }
 
     @Test
@@ -55,8 +60,9 @@ public class WindyTest {
 
         String response = windy.getResponse("bye");
 
-        assertEquals("Bye. Hope to see you again soon!\n"
-                + "______________________________________________", response);
+        assertEquals(String.join(System.lineSeparator(),
+                "Bye. Hope to see you again soon!",
+                "______________________________________________"), response);
         assertTrue(windy.isExitRequested());
     }
 
