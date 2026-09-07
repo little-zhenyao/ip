@@ -26,12 +26,9 @@ abstract class TaskCompletionCommand extends Command {
         TaskList tasks = context.getTasks();
         assert taskIndex >= 0 && taskIndex < tasks.getNumTasks()
                 : "Task index should have been validated by Parser";
-        if (shouldMarkDone) {
-            tasks.markTaskAsDone(taskIndex);
-        } else {
-            tasks.markTaskAsNotDone(taskIndex);
+        if (!context.applyTaskChange(candidate -> candidate.getTask(taskIndex).setDone(shouldMarkDone))) {
+            return;
         }
-        context.saveTasks();
         if (shouldMarkDone) {
             context.getUi().showTaskMarkedDone(tasks.getTask(taskIndex));
         } else {

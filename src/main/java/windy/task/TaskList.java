@@ -21,6 +21,27 @@ public class TaskList {
     }
 
     /**
+     * Returns a deep copy of this list and its tasks.
+     *
+     * @return an independent task list.
+     */
+    public TaskList copy() {
+        return new TaskList(tasks.stream().map(Task::copy)
+                .collect(Collectors.toCollection(ArrayList::new)));
+    }
+
+    /**
+     * Replaces this list with independent copies of the supplied tasks.
+     *
+     * @param source the replacement contents.
+     */
+    public void replaceWith(TaskList source) {
+        TaskList replacement = source.copy();
+        tasks.clear();
+        tasks.addAll(replacement.tasks);
+    }
+
+    /**
      * Adds a task to the end of the list.
      *
      * @param task the task to add.

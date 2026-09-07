@@ -18,6 +18,25 @@ import windy.exception.InvalidInputFormatException;
 public class TaskListTest {
 
     @Test
+    public void copyAndReplace_isolateMutableTasksAndPreserveAllFields() throws InvalidInputFormatException {
+        TaskList original = new TaskList(new ArrayList<>(List.of(
+                new Todo("A", true),
+                new Deadline("B", false, "2026-9-7"),
+                new Event("C", true, "2026-9-7", "2026-9-8"))));
+        List<String> records = original.getTasks().stream().map(Task::toDataString).toList();
+        TaskList snapshot = original.copy();
+        original.getTasks().forEach(task -> task.setDone(!task.isDone()));
+        original.deleteTask(1);
+        assertEquals(records, snapshot.getTasks().stream().map(Task::toDataString).toList());
+
+        original.replaceWith(snapshot);
+        original.getTasks().forEach(task -> task.setDone(!task.isDone()));
+        assertEquals(records, snapshot.getTasks().stream().map(Task::toDataString).toList());
+        snapshot.replaceWith(snapshot);
+        assertEquals(records, snapshot.getTasks().stream().map(Task::toDataString).toList());
+    }
+
+    @Test
     public void addTask_newTask_addsTaskToList() {
         TaskList taskList = new TaskList(new ArrayList<>());
         Todo todo = new Todo("buy groceries", false);

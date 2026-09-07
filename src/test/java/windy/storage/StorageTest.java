@@ -17,6 +17,7 @@ import windy.task.Event;
 import windy.task.Task;
 import windy.task.Todo;
 
+/** Tests task serialization and safe file replacement. */
 public class StorageTest {
 
     @TempDir
@@ -73,6 +74,22 @@ public class StorageTest {
         IOException exception = assertThrows(IOException.class, storage::loadTasks);
 
         assertTrue(exception.getMessage().contains("unsupported task type 'X'"));
+    }
+
+    @Test
+    public void saveTasks_failedReplacement_cleansTemporaryFileAndPreservesTarget() throws IOException {
+        Path target = tempDirectory.resolve("windy.txt");
+        Files.createDirectory(target);
+        Path original = target.resolve("original.txt");
+        Files.writeString(original, "preserved");
+        Storage storage = new Storage(target.toString());
+
+        assertThrows(IOException.class, () -> storage.saveTasks(List.of(new Todo("A", false))));
+
+        assertEquals("preserved", Files.readString(original));
+        try (var files = Files.list(tempDirectory)) {
+            assertEquals(List.of(target), files.toList());
+        }
     }
 
     private Storage createStorageWithRecord(String record) throws IOException {

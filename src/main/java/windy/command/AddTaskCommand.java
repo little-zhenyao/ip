@@ -22,8 +22,9 @@ public class AddTaskCommand extends Command {
     @Override
     public void execute(CommandContext context) {
         TaskList tasks = context.getTasks();
-        tasks.addTask(task);
-        context.saveTasks();
+        if (!context.applyTaskChange(candidate -> candidate.addTask(task.copy()))) {
+            return;
+        }
         context.getUi().showAddTask(task, tasks.getNumTasks());
     }
 }

@@ -18,6 +18,7 @@ import windy.task.TaskList;
 import windy.task.Todo;
 import windy.ui.Ui;
 
+/** Tests command execution and task persistence. */
 public class CommandTest {
     @TempDir
     Path tempDirectory;
@@ -45,10 +46,10 @@ public class CommandTest {
         CommandContext context = new CommandContext(tasks, ui, storage);
 
         new MarkCommand(0).execute(context);
-        assertTrue(todo.isDone());
+        assertTrue(tasks.getTask(0).isDone());
 
         new UnmarkCommand(0).execute(context);
-        assertFalse(todo.isDone());
+        assertFalse(tasks.getTask(0).isDone());
 
         new DeleteCommand(0).execute(context);
         assertEquals(0, tasks.getNumTasks());

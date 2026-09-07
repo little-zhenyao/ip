@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import windy.command.Command;
 import windy.command.CommandContext;
 import windy.command.Parser;
+import windy.command.UndoHistory;
 import windy.exception.InvalidInputFormatException;
 import windy.storage.Storage;
 import windy.task.Task;
@@ -27,6 +28,7 @@ public class Windy {
     private final TaskList tasks;
     private final Storage storage;
     private final Ui ui;
+    private final UndoHistory history = new UndoHistory();
     private boolean isExitRequested;
 
     /**
@@ -77,7 +79,7 @@ public class Windy {
             Ui responseUi = Ui.createDialogUi(responseOutput);
             try {
                 Command command = Parser.parseCommand(input.trim(), tasks.getNumTasks());
-                CommandContext context = new CommandContext(tasks, responseUi, storage);
+                CommandContext context = new CommandContext(tasks, responseUi, storage, history);
                 command.execute(context);
                 isExitRequested = context.isExitRequested();
                 if (isExitRequested) {
@@ -125,7 +127,7 @@ public class Windy {
             ui.showLine();
             try {
                 Command command = Parser.parseCommand(input, tasks.getNumTasks());
-                CommandContext context = new CommandContext(tasks, ui, storage);
+                CommandContext context = new CommandContext(tasks, ui, storage, history);
                 command.execute(context);
                 if (context.isExitRequested()) {
                     break commandLoop;

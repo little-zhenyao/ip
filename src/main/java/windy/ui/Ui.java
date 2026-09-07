@@ -197,6 +197,15 @@ public class Ui {
         }
     }
 
+    /**
+     * Displays an undo or redo result.
+     *
+     * @param message the result message.
+     */
+    public void showHistoryResult(String message) {
+        showMessages(message);
+    }
+
     private void showBanner() {
         String banner = contentIndentation + "__        ___           _       \n"
                 + contentIndentation + "\\ \\      / (_)_ __   __| |_   _ \n"

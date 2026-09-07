@@ -3,6 +3,7 @@ package windy.storage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,12 +57,19 @@ public class Storage {
      * @throws IOException if the tasks cannot be written
      */
     public void saveTasks(List<Task> tasks) throws IOException {
-        Path parent = this.filePath.getParent();
+        Path parent = this.filePath.toAbsolutePath().getParent();
         if (!Files.exists(parent)) {
             Files.createDirectories(parent);
         }
         List<String> lines = tasks.stream().map(Task::toDataString).toList();
-        Files.write(this.filePath, lines);
+        Path temporaryFile = Files.createTempFile(parent, "windy-", ".tmp");
+        try {
+            Files.write(temporaryFile, lines);
+            Files.move(temporaryFile, filePath.toAbsolutePath(),
+                    StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+        } finally {
+            Files.deleteIfExists(temporaryFile);
+        }
     }
 
     /**

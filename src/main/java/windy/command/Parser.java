@@ -39,6 +39,8 @@ public class Parser {
     private static Command createCommand(String input, String[] commandParts,
             CommandType commandType, int taskCount) throws InvalidInputFormatException {
         return switch (commandType) {
+            case UNDO -> new UndoCommand();
+            case REDO -> new RedoCommand();
             case BYE -> new ByeCommand();
             case LIST -> new ListCommand();
             case MARK -> new MarkCommand(parseTaskNumber(commandParts[1], taskCount));
@@ -181,6 +183,8 @@ public class Parser {
     public static void validateCommandArgumentCount(CommandType commandType, int commandLength)
             throws InvalidInputFormatException {
         switch (commandType) {
+            case UNDO -> requireArgumentCount(commandLength, 1, "Invalid format. Please use: undo");
+            case REDO -> requireArgumentCount(commandLength, 1, "Invalid format. Please use: redo");
             case BYE, LIST -> requireArgumentCount(commandLength, 1, INVALID_COMMAND_MESSAGE);
             case MARK, UNMARK, DELETE -> requireArgumentCount(commandLength, 2,
                     "Invalid format. Please use: "

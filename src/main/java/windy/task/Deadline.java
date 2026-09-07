@@ -35,6 +35,18 @@ public class Deadline extends Task {
         }
     }
 
+    /** Copies a task whose dates have already been validated. */
+    private Deadline(Deadline source) {
+        super(source.getDescription(), source.isDone());
+        this.deadline = source.deadline;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Task copy() {
+        return new Deadline(this);
+    }
+
     /** {@inheritDoc} */
     @Override
     public String toString() {

@@ -26,6 +26,10 @@ public enum CommandType {
     DATE,
     /** Finds tasks whose descriptions contain a keyword. */
     FIND,
+    /** Reverts the latest task change. */
+    UNDO,
+    /** Restores the reverted task change. */
+    REDO,
     /** Represents an unsupported command word. */
     UNKNOWN;
 

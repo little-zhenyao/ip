@@ -77,6 +77,13 @@ public abstract class Task {
     public abstract String toDataString();
 
     /**
+     * Returns an independent copy of this task.
+     *
+     * @return a task with the same contents.
+     */
+    public abstract Task copy();
+
+    /**
      * Checks whether this incomplete task is relevant on the specified date.
      * Tasks without an associated date are not relevant on any date by default.
      *

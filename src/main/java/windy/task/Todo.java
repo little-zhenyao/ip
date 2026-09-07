@@ -20,6 +20,12 @@ public class Todo extends Task {
 
     /** {@inheritDoc} */
     @Override
+    public Task copy() {
+        return new Todo(getDescription(), isDone());
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "[T][" + this.getStatusIcon() + "] " + this.getDescription();
     }

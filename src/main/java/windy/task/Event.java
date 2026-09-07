@@ -52,6 +52,19 @@ public class Event extends Task {
         this.endDate = parsedEndDate;
     }
 
+    /** Copies a task whose dates have already been validated. */
+    private Event(Event source) {
+        super(source.getDescription(), source.isDone());
+        this.startDate = source.startDate;
+        this.endDate = source.endDate;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Task copy() {
+        return new Event(this);
+    }
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
