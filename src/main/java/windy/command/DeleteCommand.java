@@ -23,6 +23,8 @@ public class DeleteCommand extends Command {
     /** {@inheritDoc} */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
+        assert taskIndex >= 0 && taskIndex < tasks.getNumTasks()
+                : "Task index should have been validated by Parser";
         Task deletedTask = tasks.deleteTask(taskIndex);
         ui.showDeleteTask(deletedTask, tasks.getNumTasks());
         saveTasks(tasks, ui, storage);
