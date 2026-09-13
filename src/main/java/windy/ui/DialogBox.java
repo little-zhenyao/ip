@@ -13,11 +13,15 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Circle;
 
 /**
  * Displays one message together with its speaker's profile picture.
  */
 public class DialogBox extends HBox {
+
+    private static final double PROFILE_PICTURE_RADIUS = 22.0;
+    private static final double MESSAGE_WIDTH_RESERVE = 76.0;
 
     @FXML
     private Label dialog;
@@ -46,6 +50,9 @@ public class DialogBox extends HBox {
         assert displayPicture != null : "Display picture should be injected by FXML";
         dialog.setText(message);
         displayPicture.setImage(image);
+        displayPicture.setClip(new Circle(PROFILE_PICTURE_RADIUS, PROFILE_PICTURE_RADIUS,
+                PROFILE_PICTURE_RADIUS));
+        dialog.maxWidthProperty().bind(widthProperty().subtract(MESSAGE_WIDTH_RESERVE));
     }
 
     /**
@@ -56,7 +63,9 @@ public class DialogBox extends HBox {
      * @return dialog box for the user.
      */
     public static DialogBox getUserDialog(String message, Image image) {
-        return new DialogBox(message, image);
+        DialogBox dialogBox = new DialogBox(message, image);
+        dialogBox.dialog.getStyleClass().add("user-label");
+        return dialogBox;
     }
 
     /**
