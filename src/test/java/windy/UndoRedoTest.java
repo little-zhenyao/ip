@@ -125,7 +125,9 @@ public class UndoRedoTest {
         for (String command : List.of("todo B", "mark 1", "delete 1", "undo")) {
             output.reset();
             execute(command, tasks, context);
-            assertEquals("     Unable to save tasks: simulated failure" + System.lineSeparator(), output.toString());
+            assertEquals("     Could not save tasks to '" + storage.path
+                    + "': simulated failure. The change was not applied."
+                    + System.lineSeparator(), output.toString());
             assertEquals(saved, Files.readString(storage.path));
             assertEquals(List.of("T | 0 | A"), tasks.getTasks().stream().map(Task::toDataString).toList());
         }
@@ -134,7 +136,9 @@ public class UndoRedoTest {
         storage.shouldFail = true;
         output.reset();
         execute("redo", tasks, context);
-        assertEquals("     Unable to save tasks: simulated failure" + System.lineSeparator(), output.toString());
+        assertEquals("     Could not save tasks to '" + storage.path
+                + "': simulated failure. The change was not applied."
+                + System.lineSeparator(), output.toString());
         assertEquals(0, tasks.getNumTasks());
         assertEquals("", Files.readString(storage.path));
         execute("todo C", tasks, context);

@@ -77,6 +77,16 @@ public class StorageTest {
     }
 
     @Test
+    public void loadTasks_invalidDeadlineDate_identifiesFieldAndLine() throws IOException {
+        Storage storage = createStorageWithRecord("D | 0 | book | 2019-2-30");
+
+        IOException exception = assertThrows(IOException.class, storage::loadTasks);
+
+        assertEquals("Invalid task record at line 1: deadline date '2019-2-30' is invalid",
+                exception.getMessage());
+    }
+
+    @Test
     public void saveTasks_failedReplacement_cleansTemporaryFileAndPreservesTarget() throws IOException {
         Path target = tempDirectory.resolve("windy.txt");
         Files.createDirectory(target);

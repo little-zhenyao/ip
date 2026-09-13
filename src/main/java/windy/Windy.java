@@ -50,7 +50,8 @@ public class Windy {
         try {
             loadedTasks = storage.loadTasks();
         } catch (IOException exception) {
-            ui.showError("Unable to load saved tasks: " + exception.getMessage());
+            ui.showError("Could not load tasks from '" + filePath + "': " + exception.getMessage()
+                    + ". No saved tasks were loaded; changes may overwrite the file.");
             loadedTasks = new ArrayList<>();
         }
         tasks = new TaskList(loadedTasks);

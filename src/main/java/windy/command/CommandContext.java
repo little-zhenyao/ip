@@ -97,7 +97,8 @@ public class CommandContext {
             storage.saveTasks(candidate.getTasks());
             return true;
         } catch (IOException exception) {
-            ui.showError("Unable to save tasks: " + exception.getMessage());
+            ui.showError("Could not save tasks to '" + storage.getFilePath() + "': "
+                    + exception.getMessage() + ". The change was not applied.");
             return false;
         }
     }

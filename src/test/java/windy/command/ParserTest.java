@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import windy.exception.InvalidInputFormatException;
 
@@ -30,6 +31,31 @@ public class ParserTest {
     @Test
     public void parseCommand_unknownCommand_throwsInvalidInputFormatException() {
         assertThrows(InvalidInputFormatException.class, () -> Parser.parseCommand("dance", 0));
+    }
+
+    @Test
+    public void parseCommand_repeatedDateMarker_showsCommandFormat() {
+        Executable parse = () -> Parser.parseCommand("deadline book /by 2026-9-13 /by 2026-9-14", 0);
+        InvalidInputFormatException exception = assertThrows(InvalidInputFormatException.class, parse);
+
+        assertEquals("Invalid command format. Use: deadline DESCRIPTION /by yyyy-M-d",
+                exception.getMessage());
+    }
+
+    @Test
+    public void parseCommand_reservedSeparator_rejectsDescription() {
+        Executable parse = () -> Parser.parseCommand("todo buy | milk", 0);
+        InvalidInputFormatException exception = assertThrows(InvalidInputFormatException.class, parse);
+
+        assertEquals("Task description cannot contain '|'.", exception.getMessage());
+    }
+
+    @Test
+    public void parseCommand_impossibleDate_showsUnifiedDateError() {
+        Executable parse = () -> Parser.parseCommand("deadline book /by 2019-2-30", 0);
+        InvalidInputFormatException exception = assertThrows(InvalidInputFormatException.class, parse);
+
+        assertEquals("Invalid Date. Use yyyy-M-d", exception.getMessage());
     }
 
     @Test

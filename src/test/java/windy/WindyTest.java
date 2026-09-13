@@ -50,7 +50,8 @@ public class WindyTest {
 
         String response = windy.getResponse("nonsense");
 
-        assertEquals("Invalid command, please try another one", response);
+        assertEquals("Unknown command 'nonsense'. Available commands: bye, list, mark, "
+                + "unmark, delete, todo, deadline, event, date, find, undo, redo.", response);
         assertFalse(windy.isExitRequested());
     }
 

@@ -167,10 +167,11 @@ public class Ui {
      * Displays matching tasks, or a message when none are found.
      *
      * @param tasks the matching tasks.
+     * @param emptyMessage the message to display when no tasks match.
      */
-    public void showFoundTasks(List<Task> tasks) {
+    public void showFoundTasks(List<Task> tasks, String emptyMessage) {
         if (tasks.isEmpty()) {
-            showMessages("No such task found");
+            showMessages(emptyMessage);
             return;
         }
         showMessages("There are " + tasks.size() + " tasks that meet the requirements:");
