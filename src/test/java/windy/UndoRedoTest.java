@@ -95,6 +95,27 @@ public class UndoRedoTest {
     }
 
     @Test
+    public void invalidCommandsAndUnchangedCompletion_doNotCreateHistory() {
+        Windy windy = createWindy();
+        windy.getResponse("todo A");
+        String original = windy.getResponse("list");
+
+        assertEquals("Task description cannot contain '|'.", windy.getResponse("todo buy | milk"));
+        assertEquals("Task number must be between 1 and 1.", windy.getResponse("delete 2"));
+        assertEquals(original, windy.getResponse("list"));
+
+        windy.getResponse("mark 1");
+        String marked = windy.getResponse("list");
+        windy.getResponse("mark 1");
+        assertEquals("Undone the last task change.", windy.getResponse("undo"));
+        assertEquals(original, windy.getResponse("list"));
+
+        windy.getResponse("unmark 1");
+        assertEquals("Redone the last task change.", windy.getResponse("redo"));
+        assertEquals(marked, windy.getResponse("list"));
+    }
+
+    @Test
     public void parsingAndRestart_matchSpecifiedResponsesAndPersistence() {
         Windy windy = createWindy();
         assertEquals("No task change to undo.", windy.getResponse("UNDO"));

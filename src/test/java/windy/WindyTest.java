@@ -55,6 +55,30 @@ public class WindyTest {
     }
 
     @Test
+    public void getResponse_emptyListAndUnmatchedQueries_showEmptyResults() {
+        Windy windy = createWindy();
+
+        assertEquals("Let's see what we've written so far:", windy.getResponse("list"));
+        assertEquals("No tasks match 'missing'.", windy.getResponse("find missing"));
+        assertEquals("No incomplete tasks relevant on 2026-09-03.",
+                windy.getResponse("date 2026-9-3"));
+    }
+
+    @Test
+    public void getResponse_findIncludesCompletedTasksInOriginalOrder() {
+        Windy windy = createWindy();
+        windy.getResponse("todo Read book");
+        windy.getResponse("todo buy groceries");
+        windy.getResponse("deadline book report /by 2026-9-3");
+        windy.getResponse("mark 1");
+
+        assertEquals(String.join(System.lineSeparator(),
+                "There are 2 tasks that meet the requirements:",
+                "[T][X] Read book",
+                "[D][ ] book report (by: Sep 03 2026)"), windy.getResponse("find BOOK"));
+    }
+
+    @Test
     public void getResponse_byeCommand_returnsFarewellMessage() {
         Windy windy = createWindy();
 

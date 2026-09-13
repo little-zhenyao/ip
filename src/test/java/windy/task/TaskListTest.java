@@ -89,6 +89,23 @@ public class TaskListTest {
     }
 
     @Test
+    public void findTasksByDate_startEndAndDeadlineDates_areInclusive()
+            throws InvalidInputFormatException {
+        Event event = new Event("conference", false, "2026-9-3", "2026-9-5");
+        Deadline deadline = new Deadline("submit", false, "2026-9-5");
+        TaskList tasks = new TaskList(List.of(event, deadline));
+
+        assertEquals(List.of(deadline), tasks.findTasksByDate(LocalDate.of(2026, 9, 2)));
+        assertEquals(List.of(event, deadline), tasks.findTasksByDate(LocalDate.of(2026, 9, 3)));
+        assertEquals(List.of(event, deadline), tasks.findTasksByDate(LocalDate.of(2026, 9, 5)));
+        assertTrue(tasks.findTasksByDate(LocalDate.of(2026, 9, 6)).isEmpty());
+
+        event.setDone(true);
+        deadline.setDone(true);
+        assertTrue(tasks.findTasksByDate(LocalDate.of(2026, 9, 5)).isEmpty());
+    }
+
+    @Test
     public void findTasksContainingKeyword_differentLetterCase_returnsMatchingTasks() {
         Todo matchingTodo = new Todo("Read BOOK", false);
         Todo nonMatchingTodo = new Todo("buy groceries", false);
