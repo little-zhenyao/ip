@@ -80,9 +80,7 @@ public class Ui {
     public void showWelcome() {
         showLine();
         showBanner();
-        showMessages(
-                "Hello! I'm " + NAME + ".",
-                "What can I do for you?");
+        showMessages("Hey there~ I'm " + NAME + ". What story shall we write today?");
         showLine();
     }
 
@@ -90,7 +88,7 @@ public class Ui {
      * Displays the farewell message.
      */
     public void showBye() {
-        showMessages("Bye. Hope to see you again soon!");
+        showMessages("Until our next song, may the wind carry you onward!");
         showLine();
     }
 
@@ -109,7 +107,7 @@ public class Ui {
      * @param tasks the tasks to display.
      */
     public void showTaskList(List<Task> tasks) {
-        showMessages("Here are the tasks in your list:");
+        showMessages("Let's see what we've written so far:");
         for (int i = 0; i < tasks.size(); i++) {
             showMessages((i + 1) + "." + tasks.get(i));
         }
@@ -123,7 +121,7 @@ public class Ui {
      */
     public void showDeleteTask(Task task, int taskCount) {
         showMessages(
-                "Noted. I've removed this task:",
+                "Time for a change of tune! I've removed this task:",
                 "  " + task,
                 "Now you have " + taskCount + " tasks in the list.");
     }
@@ -134,7 +132,7 @@ public class Ui {
      * @param task the updated task.
      */
     public void showTaskMarkedDone(Task task) {
-        showTaskCompletionUpdate("Nice! I've marked this task as done:", task);
+        showTaskCompletionUpdate("And that's a verse complete! I've marked this task as done:", task);
     }
 
     /**
@@ -143,7 +141,7 @@ public class Ui {
      * @param task the updated task.
      */
     public void showTaskMarkedNotDone(Task task) {
-        showTaskCompletionUpdate("OK, I've marked this task as not done yet:", task);
+        showTaskCompletionUpdate("Ah, one more verse to write. I've marked this task as not done yet:", task);
     }
 
     private void showTaskCompletionUpdate(String confirmationMessage, Task task) {
@@ -158,7 +156,7 @@ public class Ui {
      */
     public void showAddTask(Task task, int taskCount) {
         showMessages(
-                "Got it. I've added this task:",
+                "A new verse for our story! I've added this task:",
                 "  " + task,
                 "Now you have " + taskCount + " tasks in the list.");
     }

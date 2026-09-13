@@ -23,8 +23,7 @@ public class WindyTest {
 
         String welcomeMessage = windy.getWelcomeMessage();
 
-        assertTrue(welcomeMessage.contains("Hello! I'm Windy."));
-        assertTrue(welcomeMessage.contains("What can I do for you?"));
+        assertTrue(welcomeMessage.contains("Hey there~ I'm Windy. What story shall we write today?"));
         assertTrue(welcomeMessage.contains("__        ___"));
     }
 
@@ -36,11 +35,11 @@ public class WindyTest {
         String listResponse = windy.getResponse("list");
 
         assertEquals(String.join(System.lineSeparator(),
-                "Got it. I've added this task:",
+                "A new verse for our story! I've added this task:",
                 "  [T][ ] read book",
                 "Now you have 1 tasks in the list."), addResponse);
         assertEquals(String.join(System.lineSeparator(),
-                "Here are the tasks in your list:",
+                "Let's see what we've written so far:",
                 "1.[T][ ] read book"), listResponse);
     }
 
@@ -61,7 +60,7 @@ public class WindyTest {
         String response = windy.getResponse("bye");
 
         assertEquals(String.join(System.lineSeparator(),
-                "Bye. Hope to see you again soon!",
+                "Until our next song, may the wind carry you onward!",
                 "______________________________________________"), response);
         assertTrue(windy.isExitRequested());
     }
