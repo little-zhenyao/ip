@@ -31,7 +31,7 @@ public class Deadline extends Task {
         try {
             this.deadline = TaskDateParser.parse(deadline);
         } catch (DateTimeParseException exception) {
-            throw new InvalidInputFormatException(TaskDateParser.DEADLINE_FORMAT_ERROR_MESSAGE);
+            throw new InvalidInputFormatException(TaskDateParser.INVALID_DATE_MESSAGE);
         }
     }
 

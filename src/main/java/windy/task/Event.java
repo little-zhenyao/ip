@@ -41,7 +41,7 @@ public class Event extends Task {
             parsedStartDate = TaskDateParser.parse(startDate);
             parsedEndDate = TaskDateParser.parse(endDate);
         } catch (DateTimeParseException exception) {
-            throw new InvalidInputFormatException(TaskDateParser.EVENT_FORMAT_ERROR_MESSAGE);
+            throw new InvalidInputFormatException(TaskDateParser.INVALID_DATE_MESSAGE);
         }
 
         if (parsedEndDate.isBefore(parsedStartDate)) {

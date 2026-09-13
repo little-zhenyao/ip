@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import windy.storage.TaskDataFormat.TaskType;
 import windy.task.Deadline;
 import windy.task.Event;
 import windy.task.Task;
+import windy.task.TaskDateParser;
 import windy.task.Todo;
 
 /**
@@ -27,6 +29,15 @@ public class Storage {
      */
     public Storage(String filePath) {
         this.filePath = Path.of(filePath);
+    }
+
+    /**
+     * Returns the configured task data file path for user-facing error messages.
+     *
+     * @return the configured task data file path.
+     */
+    public Path getFilePath() {
+        return filePath;
     }
 
     /**
@@ -95,11 +106,27 @@ public class Storage {
         try {
             return switch (taskType) {
                 case TODO -> new Todo(taskDescription, isDone);
-                case DEADLINE -> new Deadline(taskDescription, isDone, recordFields[3]);
-                case EVENT -> new Event(taskDescription, isDone, recordFields[3], recordFields[4]);
+                case DEADLINE -> {
+                    validateStoredDate(recordFields[3], "deadline date", lineNumber);
+                    yield new Deadline(taskDescription, isDone, recordFields[3]);
+                }
+                case EVENT -> {
+                    validateStoredDate(recordFields[3], "event start date", lineNumber);
+                    validateStoredDate(recordFields[4], "event end date", lineNumber);
+                    yield new Event(taskDescription, isDone, recordFields[3], recordFields[4]);
+                }
             };
         } catch (InvalidInputFormatException exception) {
-            throw createInvalidRecordException(lineNumber, "invalid task data", exception);
+            throw createInvalidRecordException(lineNumber, exception.getMessage(), exception);
+        }
+    }
+
+    private void validateStoredDate(String dateText, String fieldName, int lineNumber) throws IOException {
+        try {
+            TaskDateParser.parse(dateText);
+        } catch (DateTimeParseException exception) {
+            throw createInvalidRecordException(lineNumber,
+                    fieldName + " '" + dateText + "' is invalid", exception);
         }
     }
 

@@ -23,6 +23,6 @@ public class FindCommand extends Command {
     @Override
     public void execute(CommandContext context) {
         List<Task> foundTasks = context.getTasks().findTasksContainingKeyword(keyword);
-        context.getUi().showFoundTasks(foundTasks);
+        context.getUi().showFoundTasks(foundTasks, "No tasks match '" + keyword + "'.");
     }
 }

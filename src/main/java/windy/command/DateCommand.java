@@ -24,6 +24,7 @@ public class DateCommand extends Command {
     @Override
     public void execute(CommandContext context) {
         List<Task> foundTasks = context.getTasks().findTasksByDate(date);
-        context.getUi().showFoundTasks(foundTasks);
+        context.getUi().showFoundTasks(foundTasks,
+                "No incomplete tasks relevant on " + date + ".");
     }
 }
