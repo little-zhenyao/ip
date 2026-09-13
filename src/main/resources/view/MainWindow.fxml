@@ -9,9 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="600.0" prefWidth="550.0"
+<AnchorPane prefHeight="600.0" prefWidth="550.0"
             stylesheets="@../css/main.css"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -19,8 +17,8 @@
     <children>
         <Label alignment="CENTER"
                contentDisplay="CENTER"
-               prefHeight="17.0"
-               prefWidth="550.0"
+               prefHeight="30.0"
+               styleClass="app-title"
                text="Windy"
                textAlignment="CENTER"
                AnchorPane.leftAnchor="0.0"
@@ -54,16 +52,13 @@
                     fitToWidth="true"
                     hbarPolicy="NEVER"
                     hvalue="1.0"
-                    layoutY="18.0"
-                    prefHeight="539.0"
-                    prefWidth="550.0"
                     vvalue="1.0"
                     AnchorPane.bottomAnchor="70.0"
                     AnchorPane.leftAnchor="0.0"
                     AnchorPane.rightAnchor="0.0"
-                    AnchorPane.topAnchor="18.0">
+                    AnchorPane.topAnchor="34.0">
             <content>
-                <VBox fx:id="dialogContainer" prefHeight="552.0" prefWidth="538.0" />
+                <VBox fx:id="dialogContainer" minWidth="0.0" />
             </content>
         </ScrollPane>
     </children>
