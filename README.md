@@ -1,50 +1,48 @@
-# Windy project template
+# Windy
 
-This is a project template for a greenfield Java project. This is a project template for a greenfield Java project named _Windy_. Given below are instructions on how to use it.
+Windy is a JavaFX task manager with a chat-style interface. Use commands to add to-dos, deadlines, and events; track their completion; search tasks; and undo or redo a change. Tasks are saved between runs.
 
-## Continuous integration
+![Windy desktop interface](docs/Ui.png)
 
-The [CI workflow](.github/workflows/ci.yml) runs on every push and pull request,
-and can also be started manually from GitHub's **Actions** tab once the workflow
-is on the default branch. It uses Java 25 to compile, run JUnit tests, check
-production and test code with Checkstyle, and build the distributions on Linux,
-Windows, and macOS. Console UI test plans and interactive GUI tests are not run by CI.
+See the [User Guide](docs/README.md) for commands and examples.
 
-To run the same checks locally, select JDK 25 and run:
+## Requirements
+
+- JDK 25
+- An up-to-date version of IntelliJ IDEA, if running from the IDE
+
+## Run Windy
+
+From the project root, with JDK 25 selected:
 
 ```bash
-# Linux and macOS
+./gradlew run
+```
+
+On Windows (PowerShell):
+
+```powershell
+.\gradlew.bat run
+```
+
+In IntelliJ IDEA, open the project directory, configure the project SDK as JDK 25, then run the `main` method in `src/main/java/windy/Launcher.java`. The Gradle application entry point is also `windy.Launcher`.
+
+Type a command into Windy's input box and press Enter or click **Send**. For example, `todo read a book` adds a to-do. Windy stores tasks in `data/windy.txt` relative to the directory from which it is run; the file is created automatically when a task changes. Avoid editing this file while Windy is open.
+
+The console interface is available separately through `windy.Windy`; the normal Gradle `run` task starts the GUI.
+
+## Build and test
+
+Run the Gradle build (including JUnit tests and Checkstyle) with JDK 25:
+
+```bash
 ./gradlew --no-daemon build
 ```
 
+On Windows (PowerShell):
+
 ```powershell
-# Windows (PowerShell)
 .\gradlew.bat --no-daemon build
 ```
 
-In the repository's **Actions** tab, open **CI**, select a run, and select a
-platform's job to see its results. If a job fails, expand the failed step to
-read the error log. All three platform jobs must pass to verify the CI build.
-
-## Setting up in Intellij
-
-Prerequisites: JDK 25, update Intellij to the most recent version.
-
-1. Open Intellij (if you are not in the welcome screen, click `File` > `Close Project` to close the existing project first)
-1. Open the project into Intellij as follows:
-   1. Click `Open`.
-   1. Select the project directory, and click `OK`.
-   1. If there are any further prompts, accept the defaults.
-1. Configure the project to use **JDK 25** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
-   In the same dialog, set the **Project language level** field to the `SDK default` option.
-1. After that, locate the `src/main/java/Windy.java` file, right-click it, and choose `Run Windy.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see something like the below as the output:
-   ```
-    __        ___           _
-    \ \      / (_)_ __   __| |_   _
-     \ \ /\ / /| | '_ \ / _` | | | |
-      \ V  V / | | | | | (_| | |_| |
-       \_/\_/  |_|_| |_|\__,_|\__, |
-                              |___/
-   ```
-
-**Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+The [CI workflow](.github/workflows/ci.yml) runs this build on every push and pull request, and can also be started from GitHub Actions. It checks Linux, Windows, and macOS. Console UI test plans and interactive GUI tests are not run by CI.
